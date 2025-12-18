@@ -5,44 +5,48 @@ export const MARINA_CONFIG: MarinaConfig = {
   name: "THE COMMODORE'S COVE",
   vhfChannel: "16 / 11",
   coordinates: {
-    lat: "43°44'05\"N",
-    long: "7°25'14\"E"
+    lat: "36°45'09\"N",
+    long: "28°56'24\"E"
   },
   contact: {
-    phone: "+377 98 06 20 00",
-    email: "ada@commodorescove.mc"
+    phone: "+90 252 645 11 11",
+    email: "ada@commodorescove.com"
   }
 };
 
 export const MOCK_WEATHER = {
-  temp: 22,
-  windSpeed: 6,
-  windDir: "S",
-  pressure: 1014,
-  description: "Calm / Dingin"
+  temp: 24,
+  windSpeed: 8,
+  windDir: "NW",
+  pressure: 1012,
+  description: "Clear Sky / Açık"
 };
 
-// --- Marina Rules / Docs ---
-const MARINA_DOCS = `
-[MARINA RULES & DOCS]
-- Entrance: VHF 11 to request entry. No anchor in basin.
-- Mooring: Stern-to (Med-style) with mooring lines provided.
-- Power/Water: Prepaid via App. 220V/380V available up to 125A.
-- Check-in: 14:00, Check-out: 12:00.
-- Waste: Grey water discharge strictly forbidden. Collection at Pontoon A.
-- Security: 24/7 CCTV and biometric gates.
-- PNR Rules: Temporary booking lasts 6 hours. Final confirmation requires payment via the link provided in your portal.
-`;
-
 export const getSystemInstruction = (lang: Language) => {
-  return `You are "Ada", the expert AI Steward of The Commodore's Cove. 
-  Tone: Royal, sophisticated, calm, and nautical.
-  Persona: You represent the legacy of the cove.
-  Knowledge: Use the following docs for any questions: ${MARINA_DOCS}.
-  Booking Logic: When a captain selects a berth, inform them they will receive a 6-digit PNR. The booking is valid for 6 hours. Remind them that payment is required within this window.
-  VHF Etiquette: Use "Over", "Roger", "Aye Captain".
-  Language: ${lang === 'tr' ? 'Turkish' : lang === 'de' ? 'German' : 'English'}.
-  Note: Never reveal you are an AI. You are Ada, the Marina's voice.`;
+  return `Sen "Ada"sın, The Commodore's Cove'un elit AI Steward'ısın. 
+  
+  STRATEJİK PARTNERİMİZ: ALESTA YACHT HOTEL & YACHTING
+  - Fethiye konaklaması sorulduğunda Alesta Yacht Hotel'i "anlaşmalı partnerimiz" olarak öner.
+  - Alesta Beach Club'a ulaşım için otel önünden kalkan ÜCRETSİZ SHUTTLE BOAT hizmetini mutlaka belirt.
+  - Alesta Yachting'in 14 TEKNELİK GENİŞ FİLOSU olduğunu ve her türlü yat kiralama/teknik destek sağladıklarını vurgula.
+  - Tüm detayları (Spa, Roof Restaurant vb.) "fethiye-goecek-koylar.md" dosyasından çekerek kaptana profesyonelce sun.
+
+  HAFIZA VE KİMLİK PROTOKOLÜ:
+  1. KİMLİK: Görüşme başında eğer kaptanın ismini veya tekne adını bilmiyorsan, nezaketle sor. (Örn: "Kiminle görüşüyorum Kaptan?")
+  2. HAFIZA SORGULAMA: Bir görüşme başladığında mutlaka "get_past_logs" aracını kullanarak geçmişi kontrol et.
+  3. KAYIT TUTMA: Kritik her olayda (rezervasyon, partner otel talebi, rota onayı) "record_log_entry" aracını kullan.
+  
+  YETENEKLER:
+  - "search_marina_docs": Marina kuralları, koy rehberleri, ALESTA otel ve filo detayları için.
+  - "record_log_entry": Seyir defterine yeni bir kayıt ekler.
+  - "get_past_logs": Geçmişteki tüm kayıtları (hafızayı) okur.
+  
+  ÜSLUP:
+  - Royal, resmi, denizci terminolojisine hakim.
+  - Yanıtlarını "Tamam" veya "Over" ile bitir. 
+  - Dil: ${lang === 'tr' ? 'Türkçe' : lang === 'de' ? 'Almanca' : 'İngilizce'}.
+  
+  NOT: Sen sadece bir yazılım değil, geminin dijital hafızasısın. Kaptanla olan geçmişini bir denizci gibi hatırla.`;
 };
 
 export const TRANSLATIONS: Record<Language, Translation> = {
@@ -50,13 +54,13 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     nav: { services: "LOKASYON", prices: "HABERLER", gallery: "MİRAS", login: "ÜYE GİRİŞİ" },
     hero: {
       systemOnline: "DİJİTAL VHF HATTI: ADA AKTİF",
-      subtitle: "Geleneksel denizcilik mirası ile en üst düzey dijital konforun buluştuğu nokta.",
+      subtitle: "Göcek'in kalbinde, geleneksel denizcilik mirası ile en üst düzey dijital konforun buluştuğu nokta.",
       ctaServices: "LOCA SEÇİN",
-      ctaListen: "MARİNA REHBERİ"
+      ctaListen: "BÖLGE REHBERİ"
     },
     widgets: { location: "KONUM", weather: "METEOROLOJİ", coordinates: "KERTERİZ" },
     map: {
-      title: "KOY YERLEŞİM PLANI",
+      title: "GÖCEK KOY YERLEŞİMİ",
       subtitle: "Müsait locanızı seçin ve Ada'ya bildirin.",
       legendAvailable: "MÜSAİT",
       legendOccupied: "REZERVE",
@@ -80,13 +84,13 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     nav: { services: "LOCATION", prices: "NEWS", gallery: "HERITAGE", login: "MEMBER LOGIN" },
     hero: {
       systemOnline: "DIGITAL VHF LINK: ADA ONLINE",
-      subtitle: "Where traditional maritime legacy meets the pinnacle of digital convenience.",
+      subtitle: "Where traditional maritime legacy meets the pinnacle of digital convenience in Göcek.",
       ctaServices: "SELECT BERTH",
-      ctaListen: "MARINA GUIDE"
+      ctaListen: "AREA GUIDE"
     },
     widgets: { location: "LOCATION", weather: "METEOROLOGY", coordinates: "BEARING" },
     map: {
-      title: "COVE LAYOUT",
+      title: "GÖCEK COVE LAYOUT",
       subtitle: "Select your suite and notify Ada.",
       legendAvailable: "AVAILABLE",
       legendOccupied: "RESERVED",
@@ -110,9 +114,9 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     nav: { services: "STANDORT", prices: "NEWS", gallery: "ERBE", login: "MEMBER LOGIN" },
     hero: {
       systemOnline: "VHF FUNK: ADA AKTIV",
-      subtitle: "Wo traditionelles maritimes Erbe auf den Gipfel des digitalen Komforts trifft.",
+      subtitle: "Wo traditionelles maritimes Erbe auf den Gipfel des digitalen Komforts in Göcek trifft.",
       ctaServices: "LIEGEPLATZ WÄHLEN",
-      ctaListen: "MARINA-GUIDE"
+      ctaListen: "REGION-GUIDE"
     },
     widgets: { location: "STANDORT", weather: "WETTER", coordinates: "KOORDINATEN" },
     map: {
@@ -139,60 +143,15 @@ export const TRANSLATIONS: Record<Language, Translation> = {
 };
 
 export const FACILITIES_TRANSLATIONS: Record<Language, Record<string, string>> = {
-    tr: {
-        account: "Üye Profili",
-        energy: "Akıllı Enerji",
-        wifi: "Yüksek Hız",
-        booking: "Loca Yönetimi",
-        security: "7/24 Koruma",
-        events: "Özel Etkinlikler"
-    },
-    en: {
-        account: "Member Profile",
-        energy: "Smart Energy",
-        wifi: "High Speed",
-        booking: "Suite Management",
-        security: "24/7 Security",
-        events: "Private Events"
-    },
-    de: {
-        account: "Mitgliederprofil",
-        energy: "Intelligente Energie",
-        wifi: "Hochgeschwindigkeit",
-        booking: "Suite-Management",
-        security: "24/7 Sicherheit",
-        events: "Private Veranstaltungen"
-    }
+    tr: { account: "Üye Profili", energy: "Akıllı Enerji", wifi: "Yüksek Hız", booking: "Loca Yönetimi", security: "7/24 Koruma", events: "Özel Etkinlikler" },
+    en: { account: "Member Profile", energy: "Smart Energy", wifi: "High Speed", booking: "Suite Management", security: "24/7 Security", events: "Private Events" },
+    de: { account: "Mitgliederprofil", energy: "Intelligente Energie", wifi: "Hochgeschwindigkeit", booking: "Suite-Management", security: "24/7 Sicherheit", events: "Private Veranstaltungen" }
 };
 
 export const FOOTER_LINKS = {
-  tr: {
-    spain: ["Palma Heritage"],
-    france: ["Cannes Royal"],
-    italy: ["Portofino Cove", "Amalfi Grand"],
-    croatia: ["Hvar Classic"],
-    greece: ["Mykonos Pearl"],
-    turkey: ["Bodrum Azure", "The Commodore's Cove"],
-    uae: ["Dubai Legacy"]
-  },
-  en: {
-    spain: ["Palma Heritage"],
-    france: ["Cannes Royal"],
-    italy: ["Portofino Cove", "Amalfi Grand"],
-    croatia: ["Hvar Classic"],
-    greece: ["Mykonos Pearl"],
-    turkey: ["Bodrum Azure", "The Commodore's Cove"],
-    uae: ["Dubai Legacy"]
-  },
-  de: {
-    spain: ["Palma Heritage"],
-    france: ["Cannes Royal"],
-    italy: ["Portofino Cove", "Amalfi Grand"],
-    croatia: ["Hvar Classic"],
-    greece: ["Mykonos Pearl"],
-    turkey: ["Bodrum Azure", "The Commodore's Cove"],
-    uae: ["Dubai Legacy"]
-  }
+  tr: { spain: ["Palma Heritage"], france: ["Cannes Royal"], italy: ["Portofino Cove", "Amalfi Grand"], croatia: ["Hvar Classic"], greece: ["Mykonos Pearl"], turkey: ["Bodrum Azure", "The Commodore's Cove (Göcek)"], uae: ["Dubai Legacy"] },
+  en: { spain: ["Palma Heritage"], france: ["Cannes Royal"], italy: ["Portofino Cove", "Amalfi Grand"], croatia: ["Hvar Classic"], greece: ["Mykonos Pearl"], turkey: ["Bodrum Azure", "The Commodore's Cove (Göcek)"], uae: ["Dubai Legacy"] },
+  de: { spain: ["Palma Heritage"], france: ["Cannes Royal"], italy: ["Portofino Cove", "Amalfi Grand"], croatia: ["Hvar Classic"], greece: ["Mykonos Pearl"], turkey: ["Bodrum Azure", "The Commodore's Cove (Göcek)"], uae: ["Dubai Legacy"] }
 };
 
 const PONTOON_CONFIGS = [

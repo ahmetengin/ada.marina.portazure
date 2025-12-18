@@ -1,3 +1,4 @@
+
 export type Language = 'tr' | 'en' | 'de';
 
 export interface Message {
@@ -7,6 +8,15 @@ export interface Message {
   timestamp: Date;
   type?: 'text' | 'payment_request' | 'confirmation';
   metadata?: any;
+}
+
+export interface LogEntry {
+  timestamp: string;
+  type: 'NAVIGATION' | 'BOOKING' | 'CUSTOMS' | 'CONCIERGE' | 'SYSTEM';
+  author: string; // Kim (Kaptan Adı)
+  vessel?: string; // Tekne Adı
+  subject: string; // Konu
+  text: string;    // Detay
 }
 
 export interface MarinaConfig {
@@ -81,7 +91,6 @@ export interface Translation {
   }
 }
 
-// Extend Window interface for SpeechRecognition
 declare global {
   interface Window {
     SpeechRecognition: any;
