@@ -1,31 +1,36 @@
+
 <!DOCTYPE html>
 <html lang="tr">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Port Azure | Premium Marina & Yacht Club</title>
+    <title>The Commodore's Cove | Heritage Marina & Yacht Club</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Montserrat', 'sans-serif'],
+              sans: ['Inter', 'sans-serif'],
               serif: ['Playfair Display', 'serif'],
+              heading: ['Cinzel', 'serif'],
             },
             colors: {
-              navy: {
-                950: '#020617',
-                900: '#0B1120',
-                800: '#151e32',
-                700: '#1e293b',
+              emerald: {
+                950: '#050a09',
+                900: '#0a1a15',
+                800: '#142d26',
+                700: '#1e4036',
               },
-              gold: {
-                400: '#FCD34D',
-                500: '#D4AF37', // Classic Metallic Gold
-                600: '#B4942D',
-                700: '#92761F',
+              brass: {
+                400: '#e5c07b',
+                500: '#c5a059', // Polished Brass
+                600: '#a38144',
+              },
+              ivory: {
+                50: '#fdfaf3',
+                100: '#f9f3e6',
               }
             },
             animation: {
@@ -43,22 +48,19 @@
       }
     </script>
     <style>
-      /* Custom Scrollbar */
-      .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-      }
-      .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-      }
+      .scrollbar-hide::-webkit-scrollbar { display: none; }
+      .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       .glass-panel {
-        background: rgba(11, 17, 32, 0.85);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(212, 175, 55, 0.15); /* Gold border */
+        background: rgba(10, 26, 21, 0.9);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(197, 160, 89, 0.2);
       }
-      .gold-gradient {
-        background: linear-gradient(135deg, #D4AF37 0%, #FCD34D 50%, #B4942D 100%);
+      .brass-gradient {
+        background: linear-gradient(135deg, #c5a059 0%, #e5c07b 50%, #a38144 100%);
+      }
+      body {
+        background-color: #050a09;
+        color: #f9f3e6;
       }
     </style>
   <script type="importmap">
@@ -73,7 +75,7 @@
 }
 </script>
 </head>
-  <body class="bg-navy-950 text-slate-300 antialiased overflow-x-hidden">
+  <body class="antialiased overflow-x-hidden">
     <div id="root"></div>
   </body>
 </html>
