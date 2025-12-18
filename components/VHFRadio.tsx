@@ -91,11 +91,8 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, triggerBooking }) => 
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    if (triggerBooking) {
-      setIsOpen(true);
-    }
-  }, [triggerBooking]);
+  // AUTO-OPEN TRIGGER REMOVED TO ALLOW PAYMENT MODAL VISIBILITY
+  // The VHF radio will now only be opened manually by the user.
 
   const disconnect = useCallback(() => {
     processorRef.current?.disconnect();
@@ -151,7 +148,7 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, triggerBooking }) => 
       const sessionPromise = ai.live.connect({
         model: 'gemini-2.5-flash-native-audio-preview-09-2025',
         config: {
-          responseModalities: [Modality.AUDIO],
+          responseModalalities: [Modality.AUDIO],
           speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } },
           systemInstruction: getSystemInstruction(lang) + " You are Ada. Immediately greet the Captain briefly.",
           inputAudioTranscription: {},
@@ -243,7 +240,7 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, triggerBooking }) => 
             <div className="absolute inset-[10px] md:rounded-[3.5rem] border-2 border-brass-500/40 pointer-events-none z-50"></div>
             <div className="absolute inset-[18px] md:rounded-[3.2rem] border border-brass-500/10 pointer-events-none z-50"></div>
 
-            {/* Background Transcript with increased visibility */}
+            {/* Background Transcript */}
             <div className="absolute inset-0 z-0 p-16 overflow-hidden pointer-events-none opacity-[0.12] select-none">
                <div className="flex flex-col gap-5 font-mono text-[10px] text-ivory-100 tracking-[0.2em] uppercase">
                   {transcript.map((item, i) => (
