@@ -219,32 +219,36 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, triggerBooking }) => 
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 md:bottom-12 md:right-12 z-50 group flex items-center justify-center animate-float"
+          className="fixed bottom-10 right-10 z-50 group flex items-center justify-center animate-float"
         >
-          <div className="absolute inset-0 bg-brass-500 rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
-          <div className="bg-emerald-950 border-2 border-brass-500 text-brass-500 p-6 rounded-full shadow-[0_0_50px_rgba(197,160,89,0.3)] transition-all hover:scale-110 active:scale-95 relative z-10">
-            <Radio className="w-8 h-8" />
+          <div className="absolute inset-0 bg-brass-500 rounded-full blur-3xl opacity-30 group-hover:opacity-60 transition-opacity"></div>
+          <div className="bg-emerald-900 border-2 border-brass-400 text-brass-400 p-8 rounded-full shadow-[0_15px_60px_rgba(197,160,89,0.4)] transition-all hover:scale-110 active:scale-95 relative z-10">
+            <Radio className="w-10 h-10" />
+            <span className="absolute -top-1 -right-1 flex h-5 w-5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brass-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-5 w-5 bg-brass-500 shadow-lg"></span>
+            </span>
           </div>
         </button>
       )}
 
       {/* VHF Master Console UI */}
       {isOpen && (
-        <div className="fixed z-[100] inset-0 md:inset-auto md:bottom-8 md:right-8 w-full h-full md:w-[440px] md:h-[680px] flex flex-col animate-fade-in">
+        <div className="fixed z-[100] inset-0 md:inset-auto md:bottom-12 md:right-12 w-full h-full md:w-[460px] md:h-[720px] flex flex-col animate-fade-in">
           
-          {/* Main Panel with Thin Brass Border */}
-          <div className="flex-1 bg-[#050c0a] md:rounded-[3rem] p-0.5 shadow-[0_40px_100px_rgba(0,0,0,0.8)] flex flex-col relative overflow-hidden">
+          {/* Main Panel with Radiant Navy Background */}
+          <div className="flex-1 bg-gradient-to-br from-[#0f2a26] to-[#050c0a] md:rounded-[4rem] p-0.5 shadow-[0_50px_120px_rgba(0,0,0,0.8)] flex flex-col relative overflow-hidden ring-1 ring-brass-500/20">
             
-            {/* Elegant Dual-Line Border Effect */}
-            <div className="absolute inset-[8px] md:rounded-[2.5rem] border border-brass-500/30 pointer-events-none z-50"></div>
-            <div className="absolute inset-[14px] md:rounded-[2.2rem] border border-brass-500/10 pointer-events-none z-50"></div>
+            {/* Elegant Polished Brass Dual-Line Border */}
+            <div className="absolute inset-[10px] md:rounded-[3.5rem] border-2 border-brass-500/40 pointer-events-none z-50"></div>
+            <div className="absolute inset-[18px] md:rounded-[3.2rem] border border-brass-500/10 pointer-events-none z-50"></div>
 
-            {/* Subtle Transcript Layer */}
-            <div className="absolute inset-0 z-0 p-12 overflow-hidden pointer-events-none opacity-[0.08] select-none">
-               <div className="flex flex-col gap-4 font-mono text-[9px] text-brass-500 tracking-[0.2em] uppercase">
+            {/* Background Transcript with increased visibility */}
+            <div className="absolute inset-0 z-0 p-16 overflow-hidden pointer-events-none opacity-[0.12] select-none">
+               <div className="flex flex-col gap-5 font-mono text-[10px] text-ivory-100 tracking-[0.2em] uppercase">
                   {transcript.map((item, i) => (
-                    <div key={i} className="animate-fade-in">
-                      {item.role === 'user' ? '» ' : '« '} {item.text}
+                    <div key={i} className="animate-fade-in leading-relaxed">
+                      {item.role === 'user' ? 'STATION CALL > ' : 'ADA STEWARD < '} {item.text}
                     </div>
                   ))}
                   <div ref={transcriptRef} />
@@ -252,84 +256,87 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, triggerBooking }) => 
             </div>
 
             {/* Console Header */}
-            <div className="pt-12 px-12 flex justify-between items-start z-10 relative">
+            <div className="pt-16 px-16 flex justify-between items-start z-10 relative">
                <div className="flex flex-col">
-                  <div className="flex items-center gap-2">
-                     <Anchor className="w-4 h-4 text-brass-500" />
-                     <span className="font-heading text-[10px] text-brass-500 tracking-[0.6em] uppercase font-bold">ADA STEWARD</span>
+                  <div className="flex items-center gap-3">
+                     <Anchor className="w-5 h-5 text-brass-400" />
+                     <span className="font-heading text-[12px] text-brass-400 tracking-[0.8em] uppercase font-bold">ADA STEWARD</span>
                   </div>
-                  <div className="flex items-center gap-3 mt-4">
-                     <div className={`w-2 h-2 rounded-full ${status === 'RX' ? 'bg-orange-500 shadow-[0_0_10px_#f97316] animate-pulse' : powerOn ? 'bg-emerald-500 shadow-[0_0_10px_#10b981]' : 'bg-red-950'} transition-all`}></div>
-                     <span className="text-[9px] font-mono text-ivory-100/30 tracking-[0.3em] uppercase">
-                        {status === 'RX' ? 'RX SIGNAL' : status === 'CONNECTING' ? 'CONNECTING' : 'VHF CH 11'}
+                  <div className="flex items-center gap-4 mt-6">
+                     <div className={`w-3 h-3 rounded-full ${status === 'RX' ? 'bg-orange-500 shadow-[0_0_20px_#f97316] animate-pulse' : powerOn ? 'bg-emerald-400 shadow-[0_0_20px_#34d399]' : 'bg-red-900'} transition-all`}></div>
+                     <span className="text-[10px] font-mono text-ivory-100/50 tracking-[0.4em] uppercase font-semibold">
+                        {status === 'RX' ? 'RX: RECEIVING' : status === 'CONNECTING' ? 'SEARCHING...' : 'LIVE VHF CH 11'}
                      </span>
                   </div>
                </div>
 
-               {/* Exit Button - More elegant but clear */}
+               {/* Exit Button - Radiant Brass */}
                <button 
                  onClick={() => setIsOpen(false)} 
-                 className="group relative flex flex-col items-center gap-2 transition-all hover:scale-105"
+                 className="group relative flex flex-col items-center gap-3 transition-all hover:scale-110"
                >
-                  <div className="flex items-center justify-center p-2.5 rounded-full border border-brass-500/20 bg-black/40 shadow-inner group-hover:border-red-500/50 group-hover:bg-red-950/20 transition-all">
-                    <X className="w-5 h-5 text-brass-500 group-hover:text-red-500" />
+                  <div className="flex items-center justify-center p-3.5 rounded-2xl border-2 border-brass-500/30 bg-black/50 shadow-2xl group-hover:border-red-500/80 group-hover:bg-red-950/40 transition-all duration-300">
+                    <X className="w-6 h-6 text-brass-400 group-hover:text-white" />
                   </div>
-                  <span className="text-[7px] font-mono text-brass-500/30 tracking-[0.3em] uppercase group-hover:text-red-500 transition-colors">Terminate</span>
+                  <span className="text-[8px] font-mono text-brass-400/40 tracking-[0.4em] uppercase group-hover:text-red-500 transition-colors font-bold">Exit Link</span>
                </button>
             </div>
 
             {/* Central Controls */}
             <div className="flex-1 flex flex-col items-center justify-center z-10 relative">
                
-               {/* Minimal Aura */}
+               {/* Sound Ripple Aura */}
                <div 
-                 className="absolute w-56 h-56 rounded-full border border-brass-500/10 transition-transform duration-200"
-                 style={{ transform: `scale(${1 + (volumeLevel / 100) * 1.5})` }}
+                 className="absolute w-64 h-64 rounded-full border-2 border-brass-500/20 bg-brass-500/5 transition-transform duration-200"
+                 style={{ transform: `scale(${1 + (volumeLevel / 100) * 1.8})` }}
                ></div>
 
-               {/* PTT Button */}
+               {/* PTT (Push To Talk) Large Button */}
                <button
                   onClick={toggleMic}
-                  className={`relative w-56 h-56 rounded-full border transition-all duration-700 flex flex-col items-center justify-center gap-6 shadow-[0_40px_80px_rgba(0,0,0,0.6)]
-                    ${!powerOn ? 'bg-[#040807] border-white/5 text-white/5' : 
-                      isTransmitting ? 'bg-emerald-950/40 border-brass-500 text-brass-500 shadow-[0_0_40px_rgba(197,160,89,0.15)]' : 
-                      'bg-black/40 border-white/5 text-ivory-100/10 shadow-inner'}
+                  className={`relative w-64 h-64 rounded-full border-4 transition-all duration-700 flex flex-col items-center justify-center gap-8 shadow-[0_60px_100px_rgba(0,0,0,0.7)]
+                    ${!powerOn ? 'bg-[#040a08] border-white/5 text-white/5' : 
+                      isTransmitting ? 'bg-emerald-900/40 border-brass-400 text-brass-400 shadow-[0_0_80px_rgba(197,160,89,0.25)]' : 
+                      'bg-black/60 border-brass-900/40 text-ivory-100/10 shadow-inner group'}
                   `}
                >
-                  <div className={`transition-all duration-500 ${isTransmitting ? 'scale-110 opacity-100' : 'scale-90 opacity-40'}`}>
-                    {isTransmitting ? <Mic className="w-12 h-12" /> : <MicOff className="w-12 h-12" />}
+                  <div className={`transition-all duration-700 ${isTransmitting ? 'scale-125 opacity-100 text-brass-400' : 'scale-90 opacity-20'}`}>
+                    {isTransmitting ? <Mic className="w-16 h-16" /> : <MicOff className="w-16 h-16" />}
                   </div>
                   
                   <div className="flex flex-col items-center">
-                    <span className={`font-heading font-bold text-[10px] tracking-[0.6em] uppercase transition-colors duration-500 ${isTransmitting ? 'text-brass-500' : 'text-ivory-100/10'}`}>
+                    <span className={`font-heading font-bold text-[12px] tracking-[0.8em] uppercase transition-colors duration-700 ${isTransmitting ? 'text-brass-400' : 'text-ivory-100/10'}`}>
                       {isTransmitting ? 'ON AIR' : 'MUTED'}
                     </span>
-                    <div className="flex gap-2 mt-4">
+                    <div className="flex gap-3 mt-6">
                        {[...Array(3)].map((_, i) => (
-                          <div key={i} className={`w-1 h-1 rounded-full ${status === 'RX' ? 'bg-orange-500 animate-bounce' : isTransmitting ? 'bg-brass-500 animate-pulse' : 'bg-white/5'}`} style={{animationDelay: `${i * 0.1}s`}}></div>
+                          <div key={i} className={`w-2 h-2 rounded-full ${status === 'RX' ? 'bg-orange-500 animate-bounce' : isTransmitting ? 'bg-brass-400 animate-pulse shadow-[0_0_10px_#c5a059]' : 'bg-white/5'}`} style={{animationDelay: `${i * 0.15}s`}}></div>
                        ))}
                     </div>
                   </div>
+
+                  {/* Glass Reflection */}
+                  <div className="absolute inset-4 rounded-full border-t border-white/20 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
                </button>
 
-               <div className="mt-16 flex items-center gap-10">
-                  <div className="flex flex-col items-center gap-1.5">
-                     <span className="text-[8px] font-heading text-brass-500/30 tracking-[0.3em] uppercase">Bearing</span>
-                     <div className="text-[10px] font-mono text-ivory-100/50">{config.coordinates.lat}</div>
+               <div className="mt-20 flex items-center gap-12">
+                  <div className="flex flex-col items-center gap-2">
+                     <span className="text-[10px] font-heading text-brass-500/40 tracking-[0.4em] uppercase">Bearing</span>
+                     <div className="text-[12px] font-mono text-ivory-100/70 font-bold">{config.coordinates.lat}</div>
                   </div>
-                  <div className="h-6 w-px bg-brass-500/10"></div>
-                  <div className="flex flex-col items-center gap-1.5">
-                     <span className="text-[8px] font-heading text-brass-500/30 tracking-[0.3em] uppercase">Comm Mode</span>
-                     <div className="text-[10px] font-mono text-ivory-100/50">VOICE/LIVE</div>
+                  <div className="h-10 w-px bg-brass-500/20"></div>
+                  <div className="flex flex-col items-center gap-2">
+                     <span className="text-[10px] font-heading text-brass-500/40 tracking-[0.4em] uppercase">Status</span>
+                     <div className="text-[12px] font-mono text-ivory-100/70 font-bold">LEGACY ENCRYPTED</div>
                   </div>
                </div>
             </div>
 
             {/* Minimalist Footer Branding */}
-            <div className="h-20 flex flex-col items-center justify-center relative mb-4">
-               <div className="w-48 h-px bg-gradient-to-r from-transparent via-brass-500/40 to-transparent mb-4"></div>
-               <span className="text-ivory-50/60 font-heading text-[12px] tracking-[0.8em] uppercase">The Commodore's Cove</span>
-               <span className="text-brass-500/20 font-mono text-[7px] tracking-[0.4em] uppercase mt-2">Marine Heritage AI Console</span>
+            <div className="h-24 flex flex-col items-center justify-center relative mb-8">
+               <div className="w-56 h-px bg-gradient-to-r from-transparent via-brass-500/60 to-transparent mb-6"></div>
+               <span className="text-ivory-50/80 font-heading text-[14px] tracking-[1em] uppercase font-bold drop-shadow-md">The Commodore's Cove</span>
+               <span className="text-brass-400/30 font-mono text-[9px] tracking-[0.5em] uppercase mt-3 font-bold">Heritage Marine AI Console</span>
             </div>
 
           </div>
@@ -338,12 +345,12 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, triggerBooking }) => 
 
       <style>{`
         @keyframes fade-in {
-          from { opacity: 0; transform: scale(0.95) translateY(20px); }
+          from { opacity: 0; transform: scale(0.9) translateY(40px); }
           to { opacity: 1; transform: scale(1) translateY(0); }
         }
         @keyframes float {
           0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
+          50% { transform: translateY(-15px); }
         }
       `}</style>
     </>
