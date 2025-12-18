@@ -1,0 +1,7 @@
+{
+  "name": "Port Azure AI Marina",
+  "description": "Next-gen marina landing page featuring an AI-powered VHF radio operator for automated booking, pricing, and concierge services.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
