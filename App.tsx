@@ -8,13 +8,14 @@ import ServicesSection from './components/ServicesSection';
 import BookingSearch from './components/BookingSearch';
 import { MARINA_CONFIG, MOCK_WEATHER, TRANSLATIONS, FACILITIES_TRANSLATIONS, MARINA_LIST, FOOTER_LINKS } from './constants';
 import { initializeAI } from './services/geminiService';
-import { Ship, Anchor, Zap, Wifi, Globe, Smartphone, User, Shield, Calendar, ArrowRight, Wind, Waves } from 'lucide-react';
+import { Ship, Anchor, Zap, Wifi, Globe, Smartphone, User, Shield, Calendar, ArrowRight, Wind, Waves, CheckCircle, QrCode, X } from 'lucide-react';
 import { Language, Slip } from './types';
 
 const App: React.FC = () => {
   const [lang, setLang] = useState<Language>('tr');
   const [bookingTrigger, setBookingTrigger] = useState<Slip | null>(null);
   const [searchCriteria, setSearchCriteria] = useState<any>(null);
+  const [isBookingConfirmed, setIsBookingConfirmed] = useState(false);
   
   const t = TRANSLATIONS[lang];
   const f = FACILITIES_TRANSLATIONS[lang];
@@ -26,7 +27,7 @@ const App: React.FC = () => {
 
   const handleBookSlip = (slip: Slip) => {
     setBookingTrigger(slip);
-    setTimeout(() => setBookingTrigger(null), 1000);
+    setIsBookingConfirmed(true);
   };
 
   const handleSearch = (criteria: any) => {
@@ -176,6 +177,66 @@ const App: React.FC = () => {
         </footer>
       </main>
 
+      {/* Confirmation Modal */}
+      {isBookingConfirmed && bookingTrigger && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-xl bg-navy-950/80 animate-fade-in">
+           <div className="relative w-full max-w-lg bg-navy-900 border border-gold-500/20 shadow-[0_50px_100px_rgba(0,0,0,0.8)] p-10 overflow-hidden group">
+              <div className="absolute top-0 right-0 p-4">
+                 <button onClick={() => setIsBookingConfirmed(false)} className="text-slate-500 hover:text-white transition-colors">
+                    <X className="w-6 h-6" />
+                 </button>
+              </div>
+              
+              <div className="text-center mb-10">
+                 <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle className="w-10 h-10 text-emerald-500" />
+                 </div>
+                 <h2 className="font-serif text-3xl text-white mb-2">Reservation <span className="italic text-gold-500">Confirmed</span></h2>
+                 <p className="text-xs text-slate-500 tracking-widest uppercase">Booking ID: AZ-{Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
+              </div>
+
+              <div className="space-y-6 mb-10 bg-navy-950 p-6 border-y border-white/5 font-mono text-xs uppercase tracking-widest">
+                 <div className="flex justify-between border-b border-white/5 pb-4">
+                    <span className="text-slate-500">Vessel Berth</span>
+                    <span className="text-white">{bookingTrigger.pontoon}-{bookingTrigger.number}</span>
+                 </div>
+                 <div className="flex justify-between border-b border-white/5 pb-4">
+                    <span className="text-slate-500">Category</span>
+                    <span className="text-gold-500">Premium Suite</span>
+                 </div>
+                 <div className="flex justify-between border-b border-white/5 pb-4">
+                    <span className="text-slate-500">Dates</span>
+                    <span className="text-white">{searchCriteria?.arrival || 'TBD'} - {searchCriteria?.departure || 'TBD'}</span>
+                 </div>
+                 <div className="flex justify-between pt-2">
+                    <span className="text-slate-500">Total Price</span>
+                    <span className="text-xl text-white font-serif">€{bookingTrigger.price}</span>
+                 </div>
+              </div>
+
+              <div className="flex items-center gap-6 mb-10">
+                 <div className="p-4 bg-white rounded-sm">
+                    <QrCode className="w-12 h-12 text-navy-950" />
+                 </div>
+                 <div className="flex-1">
+                    <p className="text-[10px] text-slate-500 leading-relaxed">Present this code or identify yourself on <span className="text-gold-500 font-bold">VHF Channel 16</span> upon arrival at the breakwater.</p>
+                 </div>
+              </div>
+
+              <button 
+                onClick={() => setIsBookingConfirmed(false)}
+                className="w-full py-5 bg-gold-500 text-navy-950 font-bold tracking-[0.3em] uppercase hover:bg-white transition-all shadow-xl"
+              >
+                Return to Dashboard
+              </button>
+              
+              <div className="mt-6 text-center">
+                 <p className="text-[9px] text-emerald-500/60 font-bold animate-pulse">AZURE CONCIERGE IS STANDING BY ON RADIO...</p>
+              </div>
+           </div>
+        </div>
+      )}
+
       <VHFRadio config={MARINA_CONFIG} lang={lang} triggerBooking={bookingTrigger} />
       
       <style>{`
@@ -184,10 +245,10 @@ const App: React.FC = () => {
           100% { transform: translateX(-50%); }
         }
         .animate-fade-in {
-          animation: fadeIn 1s ease-out forwards;
+          animation: fadeIn 0.5s ease-out forwards;
         }
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
+          from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
         .custom-scrollbar::-webkit-scrollbar {

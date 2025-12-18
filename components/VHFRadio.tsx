@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Mic, Send, Radio, X, Volume2, VolumeX, Activity, Settings2, PhoneOff, PlayCircle, Signal } from 'lucide-react';
 import { GoogleGenAI, LiveServerMessage, Modality } from "@google/genai";
@@ -82,6 +83,24 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, triggerBooking }) => 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isOpen]);
+
+  // Handle auto-opening when a booking is confirmed
+  useEffect(() => {
+    if (triggerBooking) {
+      setIsOpen(true);
+      if (!connected) {
+        connect().then(() => {
+          const welcomeMsg = lang === 'tr' 
+            ? `Berth ${triggerBooking.pontoon}-${triggerBooking.number} seçiminiz için teşekkürler. Giriş işlemlerinizi tamamlamama yardımcı olabilir misiniz?` 
+            : `Thank you for selecting berth ${triggerBooking.pontoon}-${triggerBooking.number}. May I help you complete your port entry documents?`;
+          
+          setTimeout(() => {
+            sessionPromiseRef.current?.then(s => s.send({ parts: [{ text: welcomeMsg }] }));
+          }, 1000);
+        });
+      }
+    }
+  }, [triggerBooking]);
 
   useEffect(() => {
     const initialMsg = lang === 'tr' 
@@ -175,15 +194,13 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, triggerBooking }) => 
               currentTranscriptionRef.current = { user: '', model: '' };
               setStatus('idle');
             }
-            if (msg.serverContent?.interrupted) {
-              nextStartTimeRef.current = 0;
-            }
           },
           onclose: () => disconnect(),
           onerror: (e) => { console.error(e); disconnect(); }
         }
       });
       sessionPromiseRef.current = sessionPromise;
+      await sessionPromise;
     } catch (e) {
       console.error(e);
       setStatus('idle');
