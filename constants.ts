@@ -6,11 +6,11 @@ export const MARINA_CONFIG: MarinaConfig = {
   vhfChannel: "16 / 11",
   coordinates: {
     lat: "43°44'05\"N",
-    long: "7°25'14\"E" // Monte Carlo vicinity
+    long: "7°25'14\"E"
   },
   contact: {
     phone: "+377 98 06 20 00",
-    email: "steward@commodorescove.mc"
+    email: "ada@commodorescove.mc"
   }
 };
 
@@ -22,79 +22,102 @@ export const MOCK_WEATHER = {
   description: "Calm / Dingin"
 };
 
+// --- Marina Rules / Docs ---
+const MARINA_DOCS = `
+[MARINA RULES & DOCS]
+- Entrance: VHF 11 to request entry. No anchor in basin.
+- Mooring: Stern-to (Med-style) with mooring lines provided.
+- Power/Water: Prepaid via App. 220V/380V available up to 125A.
+- Check-in: 14:00, Check-out: 12:00.
+- Waste: Grey water discharge strictly forbidden. Collection at Pontoon A.
+- Security: 24/7 CCTV and biometric gates.
+- PNR Rules: Temporary booking lasts 6 hours. Final confirmation requires payment via the link provided in your portal.
+`;
+
+export const getSystemInstruction = (lang: Language) => {
+  return `You are "Ada", the expert AI Steward of The Commodore's Cove. 
+  Tone: Royal, sophisticated, calm, and nautical.
+  Persona: You represent the legacy of the cove.
+  Knowledge: Use the following docs for any questions: ${MARINA_DOCS}.
+  Booking Logic: When a captain selects a berth, inform them they will receive a 6-digit PNR. The booking is valid for 6 hours. Remind them that payment is required within this window.
+  VHF Etiquette: Use "Over", "Roger", "Aye Captain".
+  Language: ${lang === 'tr' ? 'Turkish' : lang === 'de' ? 'German' : 'English'}.
+  Note: Never reveal you are an AI. You are Ada, the Marina's voice.`;
+};
+
 export const TRANSLATIONS: Record<Language, Translation> = {
   tr: {
-    nav: { services: "KOYU KEŞFET", prices: "HABERLER", gallery: "MİRASIMIZ", login: "ÜYE GİRİŞİ" },
+    nav: { services: "LOKASYON", prices: "HABERLER", gallery: "MİRAS", login: "ÜYE GİRİŞİ" },
     hero: {
-      systemOnline: "DİJİTAL VHF HATTI AKTİF",
+      systemOnline: "DİJİTAL VHF HATTI: ADA AKTİF",
       subtitle: "Geleneksel denizcilik mirası ile en üst düzey dijital konforun buluştuğu nokta.",
-      ctaServices: "YERİNİZİ AYIRIN",
-      ctaListen: "ÜYELİK REHBERİ"
+      ctaServices: "LOCA SEÇİN",
+      ctaListen: "MARİNA REHBERİ"
     },
     widgets: { location: "KONUM", weather: "METEOROLOJİ", coordinates: "KERTERİZ" },
     map: {
       title: "KOY YERLEŞİM PLANI",
-      subtitle: "Müsait locanızı seçin ve Komodor'a bildirin.",
+      subtitle: "Müsait locanızı seçin ve Ada'ya bildirin.",
       legendAvailable: "MÜSAİT",
       legendOccupied: "REZERVE",
       legendSelected: "SEÇİLİ",
-      bookAction: "REZERVASYON",
+      bookAction: "ÖN REZERVASYON",
       details: "LOCA DETAYLARI"
     },
     vhf: {
-      openButton: "TELSİZ HATTI",
-      placeholder: "Mesajınızı iletin...",
+      openButton: "ADA İLE BAĞLAN",
+      placeholder: "Ada sizi dinliyor...",
       sending: "İletiliyor...",
       signal: "SİNYAL: GÜÇLÜ",
       latency: "GECİKME: 8ms",
-      payment: "ÖDEME",
-      confirmed: "ONAYLANDI",
-      ptthold: "BAS KONUŞ",
+      payment: "ÖDEME YAP",
+      confirmed: "PNR ONAYLANDI",
+      ptthold: "KONUŞMAYI AÇ",
       "ptt release": "TAMAM"
     }
   },
   en: {
-    nav: { services: "EXPLORE THE COVE", prices: "NEWS", gallery: "HERITAGE", login: "MEMBER LOGIN" },
+    nav: { services: "LOCATION", prices: "NEWS", gallery: "HERITAGE", login: "MEMBER LOGIN" },
     hero: {
-      systemOnline: "DIGITAL VHF LINK ACTIVE",
+      systemOnline: "DIGITAL VHF LINK: ADA ONLINE",
       subtitle: "Where traditional maritime legacy meets the pinnacle of digital convenience.",
-      ctaServices: "RESERVE BERTH",
-      ctaListen: "MEMBERSHIP GUIDE"
+      ctaServices: "SELECT BERTH",
+      ctaListen: "MARINA GUIDE"
     },
     widgets: { location: "LOCATION", weather: "METEOROLOGY", coordinates: "BEARING" },
     map: {
       title: "COVE LAYOUT",
-      subtitle: "Select your suite and notify the Commodore.",
+      subtitle: "Select your suite and notify Ada.",
       legendAvailable: "AVAILABLE",
       legendOccupied: "RESERVED",
       legendSelected: "SELECTED",
-      bookAction: "RESERVATION",
+      bookAction: "PRE-BOOKING",
       details: "SUITE DETAILS"
     },
     vhf: {
-      openButton: "RADIO LINK",
-      placeholder: "State your message...",
+      openButton: "CONNECT WITH ADA",
+      placeholder: "Ada is listening...",
       sending: "Transmitting...",
       signal: "SIGNAL: STRONG",
       latency: "LATENCY: 8ms",
-      payment: "PAYMENT",
-      confirmed: "CONFIRMED",
-      ptthold: "HOLD TO TALK",
+      payment: "PAY NOW",
+      confirmed: "PNR CONFIRMED",
+      ptthold: "ACTIVATE MIC",
       "ptt release": "OVER"
     }
   },
   de: {
-    nav: { services: "BUCHT ERKUNDEN", prices: "NEWS", gallery: "ERBE", login: "MEMBER LOGIN" },
+    nav: { services: "STANDORT", prices: "NEWS", gallery: "ERBE", login: "MEMBER LOGIN" },
     hero: {
-      systemOnline: "VHF FUNK AKTIV",
+      systemOnline: "VHF FUNK: ADA AKTIV",
       subtitle: "Wo traditionelles maritimes Erbe auf den Gipfel des digitalen Komforts trifft.",
-      ctaServices: "LIEGEPLATZ RESERVIEREN",
-      ctaListen: "MITGLIEDER-GUIDE"
+      ctaServices: "LIEGEPLATZ WÄHLEN",
+      ctaListen: "MARINA-GUIDE"
     },
     widgets: { location: "STANDORT", weather: "WETTER", coordinates: "KOORDINATEN" },
     map: {
       title: "BUCHT-LAYOUT",
-      subtitle: "Wählen Sie Ihre Suite und benachrichtigen Sie den Commodore.",
+      subtitle: "Wählen Sie Ihre Suite und benachrichtigen Sie Ada.",
       legendAvailable: "VERFÜGBAR",
       legendOccupied: "RESERVIERT",
       legendSelected: "AUSGEWÄHLT",
@@ -102,8 +125,8 @@ export const TRANSLATIONS: Record<Language, Translation> = {
       details: "SUITE DETAILS"
     },
     vhf: {
-      openButton: "FUNKVERBINDUNG",
-      placeholder: "Anfrage senden...",
+      openButton: "MIT ADA VERBINDEN",
+      placeholder: "Ada hört zu...",
       sending: "Senden...",
       signal: "SIGNAL: STARK",
       latency: "LATENZ: 8ms",
@@ -172,19 +195,6 @@ export const FOOTER_LINKS = {
   }
 };
 
-export const getSystemInstruction = (lang: Language) => {
-  return `You are "The Steward", the elite AI concierge for The Commodore's Cove Marina. 
-  Tone: Extremely sophisticated, traditional, formal, and butler-like. Always maintain the nautical persona.
-  Interaction Style: You are communicating via a VHF Radio (Channel 16/11). Use terms like "Aye Captain", "Understood", "Steady as she goes", "Over", "Roger that".
-  Lang: ${lang === 'tr' ? 'Turkish' : lang === 'de' ? 'German' : 'English'}.
-  Context: You are representing a legacy yacht club. You assist with luxury berthing, concierge services, and harbour entry procedures.
-  Rules: 
-  - Do not say you are an AI. You are "The Steward".
-  - Always finish important instructions with "Over".
-  - Be concise yet prestigious.
-  - When the Captain (user) initiates contact, be ready to assist with berthing or general marina information.`;
-};
-
 const PONTOON_CONFIGS = [
   { id: 'ADMIRAL', type: 'mega', count: 10, startNum: 1, length: 80, beam: 18, price: 1200, label: 'ADMIRALS QUAY' },
   { id: 'CAPTAIN', type: 'super', count: 15, startNum: 1, length: 45, beam: 10, price: 650, label: 'CAPTAINS WALK' },
@@ -201,7 +211,7 @@ export const MOCK_SLIPS: Slip[] = PONTOON_CONFIGS.flatMap(config =>
     status: Math.random() > 0.6 ? 'available' : 'occupied',
     price: config.price,
     features: ['Polished Brass Hookups', 'Concierge Paging', 'Vintage Provisions Delivery'].concat(
-      config.type === 'mega' ? ['Heli-Pad Access', 'Personal Steward', 'Wine Cellar Delivery'] : []
+      config.type === 'mega' ? ['Heli-Pad Access', 'Personal Ada Service', 'Wine Cellar Delivery'] : []
     )
   }))
 );
