@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Wind, MapPin, Navigation, Radio } from 'lucide-react';
 import { MarinaConfig, WeatherData, Language } from '../types';
@@ -12,51 +13,41 @@ interface InfoPanelProps {
 const InfoPanel: React.FC<InfoPanelProps> = ({ weather, config, lang }) => {
   const t = TRANSLATIONS[lang];
   return (
-    <div className="absolute top-24 left-4 z-20 flex flex-col gap-4 md:top-32 md:left-12 hidden md:flex">
-      {/* Hidden on very small screens to save space, visible on md+ */}
+    <div className="absolute top-24 left-4 z-20 flex flex-col gap-4 md:top-32 md:left-12 hidden lg:flex animate-fade-in">
       
-      {/* Location Widget */}
-      <div className="glass-panel p-4 rounded-lg w-64 transform transition hover:scale-105 duration-300">
-        <div className="flex items-center gap-3 mb-2 text-neon-blue">
-          <Navigation className="w-5 h-5 text-blue-400" />
-          <h3 className="font-display text-sm tracking-wider text-slate-200">{t.widgets.location}</h3>
+      {/* Dynamic Marina Location Widget */}
+      <div className="glass-panel p-5 rounded-lg w-72 transform transition hover:scale-105 duration-500 border-l-4 border-l-brass-500">
+        <div className="flex items-center gap-3 mb-3 text-brass-500">
+          <MapPin className="w-5 h-5" />
+          <h3 className="font-heading text-[10px] tracking-widest uppercase text-ivory-100/60 font-bold">{t.widgets.location}</h3>
         </div>
-        <div className="font-mono text-xl text-white font-bold">{config.coordinates.lat}</div>
-        <div className="font-mono text-xl text-white font-bold">{config.coordinates.long}</div>
-        <div className="mt-2 text-xs text-slate-400 flex items-center gap-1">
-          <MapPin className="w-3 h-3" /> Bodrum, Türkiye
+        <div className="mb-4">
+           <div className="text-ivory-50 font-heading text-lg tracking-wider mb-1 uppercase">{config.name}</div>
+           <div className="font-mono text-xs text-brass-500/60 font-bold">{config.coordinates.lat} / {config.coordinates.long}</div>
+        </div>
+        <div className="h-[1px] w-full bg-brass-500/10 mb-4"></div>
+        <div className="flex items-center justify-between">
+           <div className="flex items-center gap-3">
+              <Radio className="w-4 h-4 text-brass-500/50" />
+              <span className="text-[10px] font-bold text-ivory-100/40 uppercase tracking-widest">VHF CH</span>
+           </div>
+           <span className="text-xl font-heading font-bold text-ivory-50">{config.vhfChannel}</span>
         </div>
       </div>
 
       {/* Weather Widget */}
-      <div className="glass-panel p-4 rounded-lg w-64 transform transition hover:scale-105 duration-300">
-        <div className="flex items-center gap-3 mb-2 text-neon-green">
-          <Wind className="w-5 h-5 text-emerald-400" />
-          <h3 className="font-display text-sm tracking-wider text-slate-200">{t.widgets.weather}</h3>
+      <div className="glass-panel p-5 rounded-lg w-72 transform transition hover:scale-105 duration-500 border-l-4 border-l-emerald-400">
+        <div className="flex items-center gap-3 mb-3 text-emerald-400">
+          <Wind className="w-5 h-5" />
+          <h3 className="font-heading text-[10px] tracking-widest uppercase text-ivory-100/60 font-bold">{t.widgets.weather}</h3>
         </div>
         <div className="flex justify-between items-end">
-          <span className="text-3xl font-bold text-white">{weather.temp}°C</span>
-          <span className="font-mono text-sm text-emerald-400 mb-1">{weather.windSpeed} kts {weather.windDir}</span>
+          <span className="text-4xl font-heading font-bold text-ivory-50">{weather.temp}°C</span>
+          <span className="font-mono text-xs text-emerald-400 mb-1 font-bold">{weather.windSpeed} KTS {weather.windDir}</span>
         </div>
-        <p className="text-xs text-slate-400 mt-1 uppercase">{weather.description}</p>
-        <div className="mt-2 h-1 w-full bg-slate-700 rounded-full overflow-hidden">
+        <p className="text-[10px] text-ivory-100/30 mt-2 uppercase tracking-widest font-bold">{weather.description}</p>
+        <div className="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden">
              <div className="h-full bg-emerald-400 w-[60%] animate-pulse"></div>
-        </div>
-      </div>
-
-      {/* VHF Radio Info Widget */}
-      <div className="glass-panel p-4 rounded-lg w-64 transform transition hover:scale-105 duration-300">
-        <div className="flex items-center gap-3 mb-2 text-gold-500">
-          <Radio className="w-5 h-5" />
-          <h3 className="font-display text-sm tracking-wider text-slate-200">VHF CHANNEL</h3>
-        </div>
-        <div className="flex justify-between items-end">
-          <span className="text-3xl font-bold text-white">{config.vhfChannel}</span>
-          <span className="font-mono text-xs text-gold-500 mb-1 animate-pulse border border-gold-500/50 px-2 py-0.5 rounded-full">● LIVE</span>
-        </div>
-        <p className="text-xs text-slate-400 mt-1 uppercase">Digital Watch Active</p>
-        <div className="mt-2 h-1 w-full bg-slate-700 rounded-full overflow-hidden">
-             <div className="h-full bg-gold-500 w-[90%]"></div>
         </div>
       </div>
     </div>

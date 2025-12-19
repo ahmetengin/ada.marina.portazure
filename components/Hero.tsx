@@ -18,15 +18,18 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-emerald-950">
-      <div className="absolute inset-0 bg-emerald-950/40 z-10"></div>
+      {/* Overlay for readability */}
+      <div className="absolute inset-0 bg-emerald-950/20 z-10"></div>
       
       <div className="absolute inset-0 z-0">
+        {/* New refreshing Aegean Coast image */}
         <img 
-          src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=2670&auto=format&fit=crop" 
-          alt="Vintage Yacht Club" 
-          className="w-full h-full object-cover opacity-80 scale-105 animate-pulse-slow"
+          src="https://images.unsplash.com/photo-1540202404-a2f29033882c?q=80&w=2600&auto=format&fit=crop" 
+          alt="Turquoise Aegean Coast" 
+          className="w-full h-full object-cover opacity-90 scale-105 animate-pulse-slow"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-950/20 to-emerald-950"></div>
+        {/* Gradient for content transition */}
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/30 via-transparent to-emerald-950"></div>
       </div>
 
       <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-6">
@@ -37,18 +40,18 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
             <div className="h-[1px] w-12 md:w-24 bg-brass-500/50"></div>
         </div>
         
-        <h1 className="font-heading text-4xl sm:text-7xl md:text-8xl lg:text-[10rem] text-ivory-50 mb-6 md:mb-10 tracking-tighter drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)] leading-[0.9]">
+        <h1 className="font-heading text-4xl sm:text-7xl md:text-8xl lg:text-[10rem] text-ivory-50 mb-6 md:mb-10 tracking-tighter drop-shadow-[0_10px_40px_rgba(0,0,0,0.6)] leading-[0.9]">
           THE <span className="italic text-brass-500">COMMODORE'S</span> COVE
         </h1>
         
-        <p className="max-w-3xl text-ivory-100/90 text-lg md:text-3xl font-serif italic mb-12 md:mb-16 leading-relaxed tracking-wide drop-shadow-md">
+        <p className="max-w-3xl text-ivory-100/90 text-lg md:text-3xl font-serif italic mb-12 md:mb-16 leading-relaxed tracking-wide drop-shadow-lg">
           "{t.hero.subtitle}"
         </p>
 
         <div className="flex flex-col sm:flex-row gap-6 md:gap-10 w-full sm:w-auto">
           <button 
             onClick={scrollToMap}
-            className="w-full sm:w-auto px-10 md:px-16 py-5 md:py-6 bg-brass-500 text-emerald-950 text-[11px] font-heading font-bold tracking-[0.4em] hover:bg-ivory-50 transition-all duration-700 uppercase shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex items-center justify-center gap-4 group">
+            className="w-full sm:w-auto px-10 md:px-16 py-5 md:py-6 bg-brass-500 text-emerald-950 text-[11px] font-heading font-bold tracking-[0.4em] hover:bg-ivory-50 transition-all duration-700 uppercase shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex items-center justify-center gap-4 group">
              <Anchor className="w-5 h-5 group-hover:rotate-12 transition-transform" /> {t.hero.ctaServices}
           </button>
           <button className="w-full sm:w-auto px-10 md:px-16 py-5 md:py-6 border-2 border-brass-500/50 text-ivory-50 hover:border-brass-500 hover:bg-brass-500/20 transition-all duration-500 flex items-center justify-center gap-4 uppercase text-[11px] font-heading tracking-[0.4em] backdrop-blur-md">

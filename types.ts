@@ -1,6 +1,8 @@
 
 export type Language = 'tr' | 'en' | 'de';
 
+export type Region = 'DIDIM' | 'BODRUM' | 'MARMARIS' | 'GOCEK' | 'FETHIYE';
+
 export interface Message {
   id: string;
   role: 'user' | 'model' | 'system';
@@ -13,18 +15,23 @@ export interface Message {
 export interface LogEntry {
   timestamp: string;
   type: 'NAVIGATION' | 'BOOKING' | 'CUSTOMS' | 'CONCIERGE' | 'SYSTEM';
-  author: string; // Kim (Kaptan Adı)
-  vessel?: string; // Tekne Adı
-  subject: string; // Konu
-  text: string;    // Detay
+  author: string;
+  vessel?: string;
+  subject: string;
+  text: string;
 }
 
 export interface MarinaConfig {
+  id: string;
+  region: Region;
   name: string;
   vhfChannel: string;
+  type: 'MARINA' | 'BAY_RESTAURANT' | 'ANCHORAGE';
   coordinates: {
     lat: string;
     long: string;
+    nLat: number; // Numeric for distance calculation
+    nLong: number; // Numeric for distance calculation
   };
   contact: {
     phone: string;
@@ -42,6 +49,7 @@ export interface WeatherData {
 
 export interface Slip {
   id: string;
+  marinaId: string;
   pontoon: string;
   number: string;
   length: number;
@@ -88,12 +96,5 @@ export interface Translation {
     confirmed: string;
     ptthold: string;
     "ptt release": string;
-  }
-}
-
-declare global {
-  interface Window {
-    SpeechRecognition: any;
-    webkitSpeechRecognition: any;
   }
 }

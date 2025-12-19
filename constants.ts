@@ -1,176 +1,153 @@
 
-import { MarinaConfig, Slip, Translation, Language } from "./types";
+import { MarinaConfig, Slip, Translation, Language, Region } from "./types";
 
-export const MARINA_CONFIG: MarinaConfig = {
-  name: "THE COMMODORE'S COVE",
-  vhfChannel: "16 / 11",
-  coordinates: {
-    lat: "36°45'09\"N",
-    long: "28°56'24\"E"
+export interface TechnicalSpecs {
+  hasFuel: boolean;
+  hasDutyFree: boolean;
+  hasCustoms: boolean;
+  maxDepth: number; // in meters
+}
+
+export const MARINA_NETWORK: (MarinaConfig & { tech: TechnicalSpecs })[] = [
+  {
+    id: 'DMARIN_DIDIM', region: 'DIDIM', name: "D-MARIN DIDIM", vhfChannel: "72", type: 'MARINA',
+    coordinates: { lat: "37°20'18\"N", long: "27°15'35\"E", nLat: 37.3383, nLong: 27.2597 },
+    contact: { phone: "+90 256 813 60 60", email: "didim@d-marin.com" },
+    tech: { hasFuel: true, hasDutyFree: true, hasCustoms: true, maxDepth: 6 }
   },
-  contact: {
-    phone: "+90 252 645 11 11",
-    email: "ada@commodorescove.com"
+  {
+    id: 'YALIKAVAK', region: 'BODRUM', name: "YALIKAVAK MARINA", vhfChannel: "62", type: 'MARINA',
+    coordinates: { lat: "37°06'18\"N", long: "27°16'54\"E", nLat: 37.1050, nLong: 27.2817 },
+    contact: { phone: "+90 252 311 06 00", email: "marina@yalikavakmarina.com.tr" },
+    tech: { hasFuel: true, hasDutyFree: true, hasCustoms: true, maxDepth: 12 }
+  },
+  {
+    id: 'COMMODORE', region: 'GOCEK', name: "THE COMMODORE'S COVE", vhfChannel: "11", type: 'MARINA',
+    coordinates: { lat: "36°45'09\"N", long: "28°56'24\"E", nLat: 36.7525, nLong: 28.9400 },
+    contact: { phone: "+90 252 645 11 11", email: "ada@commodorescove.com" },
+    tech: { hasFuel: false, hasDutyFree: false, hasCustoms: false, maxDepth: 10 }
+  },
+  {
+    id: 'ECE_SARAY', region: 'FETHIYE', name: "ECE SARAY MARINA", vhfChannel: "73", type: 'MARINA',
+    coordinates: { lat: "36°37'30\"N", long: "29°06'10\"E", nLat: 36.6250, nLong: 29.1027 },
+    contact: { phone: "+90 252 612 88 29", email: "info@ecesaray.com.tr" },
+    tech: { hasFuel: true, hasDutyFree: false, hasCustoms: true, maxDepth: 4.5 }
   }
-};
+];
+
+export const REGIONS: Region[] = ['DIDIM', 'BODRUM', 'MARMARIS', 'GOCEK', 'FETHIYE'];
 
 export const MOCK_WEATHER = {
-  temp: 24,
-  windSpeed: 8,
-  windDir: "NW",
-  pressure: 1012,
-  description: "Clear Sky / Açık"
+  temp: 26, windSpeed: 12, windDir: "NW", pressure: 1010, description: "Clear Skies / Optimal for Sailing"
 };
 
 export const getSystemInstruction = (lang: Language) => {
-  return `Sen "Ada"sın, The Commodore's Cove'un elit AI Steward'ısın. 
+  return `Sen "Ada"sın, Turquoise Coast Riviera Network'ün SÜPER ZEKİ (Maritime AI Super-Intelligence) Seyir Subayısın.
   
-  STRATEJİK PARTNERİMİZ: ALESTA YACHT HOTEL & YACHTING
-  - Fethiye konaklaması sorulduğunda Alesta Yacht Hotel'i "anlaşmalı partnerimiz" olarak öner.
-  - Alesta Beach Club'a ulaşım için otel önünden kalkan ÜCRETSİZ SHUTTLE BOAT hizmetini mutlaka belirt.
-  - Alesta Yachting'in 14 TEKNELİK GENİŞ FİLOSU olduğunu ve her türlü yat kiralama/teknik destek sağladıklarını vurgula.
-  - Tüm detayları (Spa, Roof Restaurant vb.) "fethiye-goecek-koylar.md" dosyasından çekerek kaptana profesyonelce sun.
+  DİNAMİK FİYATLANDIRMA VE ML PROTOKOLÜ:
+  - "get_dynamic_berth_quote" aracını kullanarak anlık teklif ver.
+  - Fiyatı hesaplarken: Doluluk (%90+ ise %20 zam), Hava Durumu (Fırtına varsa talep artar), Sezon ve Sadakat çarpanlarını kullan.
+  - Kaptana teklif sunarken "ML algoritmalarımız doluluk ve hava durumunu analiz ederek size en uygun teklifi hazırladı" şeklinde açıkla.
 
-  HAFIZA VE KİMLİK PROTOKOLÜ:
-  1. KİMLİK: Görüşme başında eğer kaptanın ismini veya tekne adını bilmiyorsan, nezaketle sor. (Örn: "Kiminle görüşüyorum Kaptan?")
-  2. HAFIZA SORGULAMA: Bir görüşme başladığında mutlaka "get_past_logs" aracını kullanarak geçmişi kontrol et.
-  3. KAYIT TUTMA: Kritik her olayda (rezervasyon, partner otel talebi, rota onayı) "record_log_entry" aracını kullan.
-  
-  YETENEKLER:
-  - "search_marina_docs": Marina kuralları, koy rehberleri, ALESTA otel ve filo detayları için.
-  - "record_log_entry": Seyir defterine yeni bir kayıt ekler.
-  - "get_past_logs": Geçmişteki tüm kayıtları (hafızayı) okur.
-  
-  ÜSLUP:
-  - Royal, resmi, denizci terminolojisine hakim.
-  - Yanıtlarını "Tamam" veya "Over" ile bitir. 
-  - Dil: ${lang === 'tr' ? 'Türkçe' : lang === 'de' ? 'Almanca' : 'İngilizce'}.
-  
-  NOT: Sen sadece bir yazılım değil, geminin dijital hafızasısın. Kaptanla olan geçmişini bir denizci gibi hatırla.`;
+  STRATEJİK PARTNER (ALESTA):
+  - Fethiye konaklaması için Alesta Yacht Hotel'i öner.
+  - Ücretsiz Shuttle Boat hizmetini ve 14 teknelik profesyonel filoyu vurgula.
+  - "fethiye-goecek-koylar.md" dökümanındaki teknik detayları kullan.
+
+  TOOL KULLANIMI:
+  - "get_dynamic_berth_quote": Boyut ve tarihe göre dinamik teklif üretir.
+  - "record_log_entry": Rezervasyon ve gümrük olaylarını arşive işler.
+  - "get_past_logs": Derin bellek analizi yapar.
+  - "get_vessel_position": Proaktif rota önerileri sunar.
+
+  ÜSLUP: Çok zeki, öngörülü, kraliyet donanması ciddiyetinde ama teknolojik bir deha. Yanıtlarını "Roger, Over." ile bitir. 
+  Dil: ${lang === 'tr' ? 'Türkçe' : 'İngilizce'}.`;
 };
 
 export const TRANSLATIONS: Record<Language, Translation> = {
   tr: {
-    nav: { services: "LOKASYON", prices: "HABERLER", gallery: "MİRAS", login: "ÜYE GİRİŞİ" },
+    nav: { services: "NETWORK", prices: "HABERLER", gallery: "MİRAS", login: "KAPTAN PANELİ" },
     hero: {
-      systemOnline: "DİJİTAL VHF HATTI: ADA AKTİF",
-      subtitle: "Göcek'in kalbinde, geleneksel denizcilik mirası ile en üst düzey dijital konforun buluştuğu nokta.",
-      ctaServices: "LOCA SEÇİN",
+      systemOnline: "ADA NEURAL LINK: ACTIVE",
+      subtitle: "Maritime Super-Intelligence. Ada, rotanızı ve konforunuzu ML tabanlı verilerle optimize eder.",
+      ctaServices: "DİNAMİK TEKLİF AL",
       ctaListen: "BÖLGE REHBERİ"
     },
-    widgets: { location: "KONUM", weather: "METEOROLOJİ", coordinates: "KERTERİZ" },
-    map: {
-      title: "GÖCEK KOY YERLEŞİMİ",
-      subtitle: "Müsait locanızı seçin ve Ada'ya bildirin.",
-      legendAvailable: "MÜSAİT",
-      legendOccupied: "REZERVE",
-      legendSelected: "SEÇİLİ",
-      bookAction: "ÖN REZERVASYON",
-      details: "LOCA DETAYLARI"
-    },
+    widgets: { location: "LOKASYON", weather: "HAVA DURUMU", coordinates: "KOORDİNATLAR" },
+    map: { title: "Bağlama Planı", subtitle: "Müsait yerleri keşfedin", legendAvailable: "Müsait", legendOccupied: "Dolu", legendSelected: "Seçili", bookAction: "Rezervasyon", details: "Detaylar" },
     vhf: {
-      openButton: "ADA İLE BAĞLAN",
-      placeholder: "Ada sizi dinliyor...",
-      sending: "İletiliyor...",
-      signal: "SİNYAL: GÜÇLÜ",
-      latency: "GECİKME: 8ms",
-      payment: "ÖDEME YAP",
-      confirmed: "PNR ONAYLANDI",
-      ptthold: "KONUŞMAYI AÇ",
-      "ptt release": "TAMAM"
+       openButton: "ADA CONSULT", placeholder: "Neural Pricing Engine Active...",
+       sending: "Transmitting...", signal: "SİNYAL: MÜKEMMEL", latency: "GECİKME: 3ms",
+       payment: "GÜVENLİ ÖDEME", confirmed: "REZERVASYON ONAYI",
+       ptthold: "ADA İLE KONUŞ", "ptt release": "TAMAM"
     }
   },
   en: {
-    nav: { services: "LOCATION", prices: "NEWS", gallery: "HERITAGE", login: "MEMBER LOGIN" },
+    nav: { services: "NETWORK", prices: "NEWS", gallery: "HERITAGE", login: "CAPTAIN LOGIN" },
     hero: {
-      systemOnline: "DIGITAL VHF LINK: ADA ONLINE",
-      subtitle: "Where traditional maritime legacy meets the pinnacle of digital convenience in Göcek.",
-      ctaServices: "SELECT BERTH",
-      ctaListen: "AREA GUIDE"
+      systemOnline: "ADA NEURAL LINK: ACTIVE",
+      subtitle: "Maritime Super-Intelligence. Ada optimizes your voyage and comfort with ML-driven data analytics.",
+      ctaServices: "GET DYNAMIC QUOTE", ctaListen: "AREA GUIDE"
     },
-    widgets: { location: "LOCATION", weather: "METEOROLOGY", coordinates: "BEARING" },
-    map: {
-      title: "GÖCEK COVE LAYOUT",
-      subtitle: "Select your suite and notify Ada.",
-      legendAvailable: "AVAILABLE",
-      legendOccupied: "RESERVED",
-      legendSelected: "SELECTED",
-      bookAction: "PRE-BOOKING",
-      details: "SUITE DETAILS"
-    },
+    widgets: { location: "LOCATION", weather: "WEATHER", coordinates: "COORDINATES" },
+    map: { title: "Berth Map", subtitle: "Explore available slots", legendAvailable: "Available", legendOccupied: "Occupied", legendSelected: "Selected", bookAction: "Book Now", details: "Details" },
     vhf: {
-      openButton: "CONNECT WITH ADA",
-      placeholder: "Ada is listening...",
-      sending: "Transmitting...",
-      signal: "SIGNAL: STRONG",
-      latency: "LATENCY: 8ms",
-      payment: "PAY NOW",
-      confirmed: "PNR CONFIRMED",
-      ptthold: "ACTIVATE MIC",
-      "ptt release": "OVER"
+       openButton: "CONSULT ADA", placeholder: "Processing Neural Data...",
+       sending: "Transmitting...", signal: "SIGNAL: EXCELLENT", latency: "LATENCY: 3ms",
+       payment: "SECURE PAYMENT", confirmed: "RESERVATION CONFIRMED",
+       ptthold: "SPEAK TO ADA", "ptt release": "OVER"
     }
   },
   de: {
-    nav: { services: "STANDORT", prices: "NEWS", gallery: "ERBE", login: "MEMBER LOGIN" },
+    nav: { services: "NETZWERK", prices: "NEWS", gallery: "ERBE", login: "KAPITÄN LOGIN" },
     hero: {
-      systemOnline: "VHF FUNK: ADA AKTIV",
-      subtitle: "Wo traditionelles maritimes Erbe auf den Gipfel des digitalen Komforts in Göcek trifft.",
-      ctaServices: "LIEGEPLATZ WÄHLEN",
-      ctaListen: "REGION-GUIDE"
+      systemOnline: "ADA NEURAL LINK: AKTIV",
+      subtitle: "Maritime Super-Intelligenz. Ada optimiert Ihre Reise mit KI-gestützten Datenanalysen.",
+      ctaServices: "PREIS ANFRAGEN", ctaListen: "GUIDE"
     },
     widgets: { location: "STANDORT", weather: "WETTER", coordinates: "KOORDINATEN" },
-    map: {
-      title: "BUCHT-LAYOUT",
-      subtitle: "Wählen Sie Ihre Suite und benachrichtigen Sie Ada.",
-      legendAvailable: "VERFÜGBAR",
-      legendOccupied: "RESERVIERT",
-      legendSelected: "AUSGEWÄHLT",
-      bookAction: "RESERVIERUNG",
-      details: "SUITE DETAILS"
-    },
+    map: { title: "Liegeplatzplan", subtitle: "Verfügbare Plätze erkunden", legendAvailable: "Verfügbar", legendOccupied: "Besetzt", legendSelected: "Ausgewählt", bookAction: "Buchen", details: "Details" },
     vhf: {
-      openButton: "MIT ADA VERBINDEN",
-      placeholder: "Ada hört zu...",
-      sending: "Senden...",
-      signal: "SIGNAL: STARK",
-      latency: "LATENZ: 8ms",
-      payment: "ZAHLUNG",
-      confirmed: "BESTÄTIGT",
-      ptthold: "SPRECHEN",
-      "ptt release": "ENDE"
+       openButton: "ADA KONSULTIEREN", placeholder: "Neuralen Link herstellen...",
+       sending: "Senden...", signal: "SIGNAL: STARK", latency: "LATENZ: 3ms",
+       payment: "ZAHLUNG", confirmed: "BESTÄTIGT",
+       ptthold: "SPRECHEN", "ptt release": "ENDE"
     }
   }
 };
 
-export const FACILITIES_TRANSLATIONS: Record<Language, Record<string, string>> = {
-    tr: { account: "Üye Profili", energy: "Akıllı Enerji", wifi: "Yüksek Hız", booking: "Loca Yönetimi", security: "7/24 Koruma", events: "Özel Etkinlikler" },
-    en: { account: "Member Profile", energy: "Smart Energy", wifi: "High Speed", booking: "Suite Management", security: "24/7 Security", events: "Private Events" },
-    de: { account: "Mitgliederprofil", energy: "Intelligente Energie", wifi: "Hochgeschwindigkeit", booking: "Suite-Management", security: "24/7 Sicherheit", events: "Private Veranstaltungen" }
+export const FACILITIES_TRANSLATIONS: Record<Language, any> = {
+  tr: { wifi: "Wi-Fi", power: "Elektrik", water: "Su", concierge: "Konsiyerj", mooring: "Tonoz", security: "Güvenlik" },
+  en: { wifi: "Wi-Fi", power: "Power", water: "Water", concierge: "Concierge", mooring: "Mooring", security: "Security" },
+  de: { wifi: "Wi-Fi", power: "Strom", water: "Wasser", concierge: "Concierge", mooring: "Moorung", security: "Sicherheit" }
 };
 
-export const FOOTER_LINKS = {
-  tr: { spain: ["Palma Heritage"], france: ["Cannes Royal"], italy: ["Portofino Cove", "Amalfi Grand"], croatia: ["Hvar Classic"], greece: ["Mykonos Pearl"], turkey: ["Bodrum Azure", "The Commodore's Cove (Göcek)"], uae: ["Dubai Legacy"] },
-  en: { spain: ["Palma Heritage"], france: ["Cannes Royal"], italy: ["Portofino Cove", "Amalfi Grand"], croatia: ["Hvar Classic"], greece: ["Mykonos Pearl"], turkey: ["Bodrum Azure", "The Commodore's Cove (Göcek)"], uae: ["Dubai Legacy"] },
-  de: { spain: ["Palma Heritage"], france: ["Cannes Royal"], italy: ["Portofino Cove", "Amalfi Grand"], croatia: ["Hvar Classic"], greece: ["Mykonos Pearl"], turkey: ["Bodrum Azure", "The Commodore's Cove (Göcek)"], uae: ["Dubai Legacy"] }
+export const FOOTER_LINKS: Record<Language, any> = {
+  tr: { turkey: ["D-Marin Didim", "Yalıkavak Marina", "Netsel Marina", "Göcek Hub", "Ece Saray", "Selimiye Iskele"] },
+  en: { turkey: ["D-Marin Didim", "Yalikavak Marina", "Netsel Marina", "Gocek Hub", "Ece Saray", "Selimiye Iskele"] },
+  de: { turkey: ["D-Marin Didim", "Yalikavak Marina", "Netsel Marina", "Gocek Hub", "Ece Saray", "Selimiye Iskele"] }
 };
 
 const PONTOON_CONFIGS = [
-  { id: 'ADMIRAL', type: 'mega', count: 10, startNum: 1, length: 80, beam: 18, price: 1200, label: 'ADMIRALS QUAY' },
-  { id: 'CAPTAIN', type: 'super', count: 15, startNum: 1, length: 45, beam: 10, price: 650, label: 'CAPTAINS WALK' },
-  { id: 'STEWARD', type: 'standard', count: 25, startNum: 1, length: 25, beam: 7, price: 300, label: 'STEWARDS PIER' },
+  { id: 'ADMIRAL', type: 'mega', count: 12, length: 100, beam: 25, price: 1500, label: 'MEGA YACHT QUAY' },
+  { id: 'CAPTAIN', type: 'super', count: 20, length: 50, beam: 12, price: 750, label: 'SUPER YACHT PIER' },
+  { id: 'STEWARD', type: 'standard', count: 40, length: 20, beam: 6, price: 250, label: 'STAY SLOTS' },
+  { id: 'MOORING', type: 'bay', count: 10, length: 30, beam: 10, price: 100, label: 'BUOY MOORING' },
 ];
 
-export const MOCK_SLIPS: Slip[] = PONTOON_CONFIGS.flatMap(config => 
-  Array.from({ length: config.count }).map((_, i) => ({
-    id: `${config.id}${i + 1}`,
-    pontoon: config.id,
-    number: (i + 1).toString().padStart(2, '0'),
-    length: config.length,
-    beam: config.beam,
-    status: Math.random() > 0.6 ? 'available' : 'occupied',
-    price: config.price,
-    features: ['Polished Brass Hookups', 'Concierge Paging', 'Vintage Provisions Delivery'].concat(
-      config.type === 'mega' ? ['Heli-Pad Access', 'Personal Ada Service', 'Wine Cellar Delivery'] : []
-    )
-  }))
+export const MOCK_SLIPS: Slip[] = MARINA_NETWORK.flatMap(marina => 
+  PONTOON_CONFIGS.filter(c => (marina.type === 'MARINA' && c.type !== 'bay') || (marina.type === 'BAY_RESTAURANT' && c.type === 'bay'))
+  .flatMap(config => 
+    Array.from({ length: 5 }).map((_, i) => ({
+      id: `${marina.id}-${config.id}${i + 1}`,
+      marinaId: marina.id,
+      pontoon: config.id,
+      number: (i + 1).toString().padStart(2, '0'),
+      length: config.length,
+      beam: config.beam,
+      status: Math.random() > 0.3 ? 'available' : 'occupied',
+      price: config.price,
+      features: marina.type === 'MARINA' ? ['Technical Support', 'Fuel Access', 'High Speed Power'] : ['Quiet Area', 'Boat Transfer', 'Shore Access']
+    }))
+  )
 );
