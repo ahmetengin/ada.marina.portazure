@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Mic, MicOff, X, Anchor, Radio, Activity, Signal, Power, Map, Calculator, Utensils, BookOpen, CheckCircle, BrainCircuit, Zap, Navigation, Cpu, BarChart3 } from 'lucide-react';
+import { Mic, MicOff, X, Anchor, Radio, Activity, Signal, Power, Map, Calculator, Utensils, BookOpen, CheckCircle, BrainCircuit, Zap, Navigation, Cpu, BarChart3, Fingerprint } from 'lucide-react';
 import { GoogleGenAI, LiveServerMessage, Type, FunctionDeclaration, Modality } from "@google/genai";
 import { MarinaConfig, Language, Slip, LogEntry } from '../types';
 import { getSystemInstruction, MARINA_NETWORK, MOCK_WEATHER } from '../constants';
@@ -253,7 +253,7 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, vesselPos, onLogEntry
           <div className="absolute inset-0 bg-brass-500 rounded-full blur-3xl opacity-30 group-hover:opacity-60 transition-opacity"></div>
           <div className="bg-emerald-950 border-2 border-brass-400 text-brass-400 p-8 rounded-full shadow-[0_15px_60px_rgba(197,160,89,0.4)] transition-all hover:scale-110 active:scale-95 relative z-10 overflow-hidden">
              <div className="absolute inset-0 bg-gradient-to-t from-brass-500/20 to-transparent animate-pulse"></div>
-            <BrainCircuit className="w-10 h-10 relative z-10" />
+            <Radio className="w-10 h-10 relative z-10" />
             <span className="absolute -top-1 -right-1 flex h-5 w-5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brass-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-5 w-5 bg-brass-500 shadow-lg"></span>
@@ -271,7 +271,7 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, vesselPos, onLogEntry
               <div className="absolute inset-0 z-[110] bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center gap-6">
                  <div className="relative">
                     <div className="w-24 h-24 border-2 border-brass-500/20 rounded-full animate-ping"></div>
-                    <BrainCircuit className="w-12 h-12 text-brass-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+                    <Radio className="w-12 h-12 text-brass-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
                  </div>
                  <div className="flex flex-col items-center">
                     <span className="text-[10px] font-mono font-bold text-brass-500 tracking-[0.5em] uppercase">NEURAL PRICING ENGINE</span>
@@ -297,13 +297,13 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, vesselPos, onLogEntry
             <div className="pt-16 px-16 flex justify-between items-start z-10 relative">
                <div className="flex flex-col">
                   <div className="flex items-center gap-3">
-                     <BrainCircuit className="w-5 h-5 text-brass-400" />
-                     <span className="font-heading text-[12px] text-brass-400 tracking-[0.4em] uppercase font-bold">ADA SUPER-INTEL</span>
+                     <Radio className="w-5 h-5 text-brass-400" />
+                     <span className="font-heading text-[12px] text-brass-400 tracking-[0.4em] uppercase font-bold">ADA VHF CH 11</span>
                   </div>
                   <div className="flex items-center gap-4 mt-8 h-6">
                      <div className={`w-3.5 h-3.5 rounded-full transition-all duration-500 ${status === 'RX' ? 'bg-orange-500 shadow-[0_0_20px_#f97316]' : status === 'CONNECTING' ? 'bg-amber-400 animate-pulse' : powerOn ? 'bg-emerald-400 shadow-[0_0_20px_#34d399]' : 'bg-red-600 shadow-[0_0_10px_rgba(220,38,38,0.5)]'}`}></div>
                      <span className="text-[10px] font-mono text-ivory-100/90 tracking-[0.3em] uppercase font-bold">
-                        {status === 'RX' ? 'RX: DOWNLINK' : status === 'CONNECTING' ? 'SYNCING...' : 'VHF CH 11 / AIS READY'}
+                        {status === 'RX' ? 'RX: SIGNAL' : status === 'CONNECTING' ? 'SYNCING...' : 'VHF ACTIVE'}
                      </span>
                   </div>
                </div>
@@ -315,7 +315,7 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, vesselPos, onLogEntry
             <div className="flex-1 flex flex-col items-center justify-center z-10 relative">
                <div className="absolute top-0 flex flex-col items-center opacity-30 scale-75">
                   <BarChart3 className="w-6 h-6 text-brass-500 mb-2" />
-                  <div className="text-[10px] font-mono font-bold tracking-widest text-ivory-100 uppercase">DYNAMIC QUOTE ENGINE ACTIVE</div>
+                  <div className="text-[10px] font-mono font-bold tracking-widest text-ivory-100 uppercase">DYNAMIC PRICING LINK</div>
                </div>
 
                <div className="absolute w-64 h-64 rounded-full border-2 border-brass-500/10 bg-brass-500/5 transition-transform duration-200" style={{ transform: `scale(${1 + (volumeLevel / 100) * 1.5})` }}></div>
@@ -325,14 +325,21 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, vesselPos, onLogEntry
                   </div>
                   <div className="flex flex-col items-center text-center px-8">
                     <span className={`font-heading font-bold text-[12px] tracking-[0.4em] uppercase transition-colors duration-700 ${isTransmitting ? 'text-brass-500' : 'text-ivory-100/5'}`}>
-                      {isTransmitting ? 'NEURAL LINK ON' : 'SILENCE'}
+                      {isTransmitting ? 'PTT: ACTIVE' : 'SQUELCH'}
                     </span>
                     <div className="flex gap-4 mt-6">
                        <Zap className={`w-3.5 h-3.5 ${isTransmitting ? 'text-brass-500 animate-pulse' : 'text-white/5'}`} />
-                       <BarChart3 className={`w-3.5 h-3.5 ${status === 'RX' ? 'text-orange-500 animate-pulse' : 'text-white/5'}`} />
+                       <Signal className={`w-3.5 h-3.5 ${status === 'RX' ? 'text-orange-500 animate-pulse' : 'text-white/5'}`} />
                     </div>
                   </div>
                </button>
+            </div>
+            
+            <div className="pb-12 px-16 z-10 relative">
+               <div className="flex items-center justify-center gap-1 opacity-20 hover:opacity-100 transition-opacity">
+                  <Fingerprint className="w-4 h-4 text-brass-500" />
+                  <span className="text-[8px] font-mono tracking-[0.5em] text-ivory-100 uppercase font-bold">Encrypted Marine Link</span>
+               </div>
             </div>
           </div>
         </div>
