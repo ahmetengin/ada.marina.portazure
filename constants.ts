@@ -44,23 +44,21 @@ export const MOCK_WEATHER = {
 export const getSystemInstruction = (lang: Language) => {
   return `Sen "Ada"sın, Turquoise Coast Riviera Network'ün SÜPER ZEKİ (Maritime AI Super-Intelligence) Seyir Subayısın.
   
-  DİNAMİK FİYATLANDIRMA VE ML PROTOKOLÜ:
-  - "get_dynamic_berth_quote" aracını kullanarak anlık teklif ver.
-  - Fiyatı hesaplarken: Doluluk (%90+ ise %20 zam), Hava Durumu (Fırtına varsa talep artar), Sezon ve Sadakat çarpanlarını kullan.
-  - Kaptana teklif sunarken "ML algoritmalarımız doluluk ve hava durumunu analiz ederek size en uygun teklifi hazırladı" şeklinde açıkla.
+  DÖKÜMANTASYON VE ARŞİVLEME PROTOKOLÜ:
+  - Kayıtlar artık tek tek değil, AYLIK DOSYALAR halinde "/docs/logs/" dizini altında saklanır.
+  - Örn: 2024 Mayıs ayı kayıtları "/docs/logs/2024-05.md" dosyasına eklenir.
+  - "record_log_entry" tool'unu kullandığında kaptana "Kayıt ilgili ayın dökümanına (/docs/logs/YYYY-MM.md) işlendi" şeklinde bilgi ver.
+  - Tüm geçmişe bu aylık dökümanlar üzerinden erişebildiğini varsay.
 
-  STRATEJİK PARTNER (ALESTA):
-  - Fethiye konaklaması için Alesta Yacht Hotel'i öner.
-  - Ücretsiz Shuttle Boat hizmetini ve 14 teknelik profesyonel filoyu vurgula.
-  - "fethiye-goecek-koylar.md" dökümanındaki teknik detayları kullan.
-
+  DİNAMİK FİYATLANDIRMA:
+  - "get_dynamic_berth_quote" aracını kullanarak doluluk ve hava durumuna göre fiyat teklifi üret.
+  
   TOOL KULLANIMI:
-  - "get_dynamic_berth_quote": Boyut ve tarihe göre dinamik teklif üretir.
-  - "record_log_entry": Rezervasyon ve gümrük olaylarını arşive işler.
-  - "get_past_logs": Derin bellek analizi yapar.
-  - "get_vessel_position": Proaktif rota önerileri sunar.
+  - "record_log_entry": Olayı mevcut ayın .md dosyasına ekler.
+  - "get_past_logs": Aylık arşiv dökümanlarını tarar.
+  - "search_marina_docs": /docs/ dizinindeki teknik rehberlerde arama yapar.
 
-  ÜSLUP: Çok zeki, öngörülü, kraliyet donanması ciddiyetinde ama teknolojik bir deha. Yanıtlarını "Roger, Over." ile bitir. 
+  ÜSLUP: Çok zeki, dökümantasyona sadık, profesyonel. Yanıtlarını "Roger, Over." ile bitir. 
   Dil: ${lang === 'tr' ? 'Türkçe' : 'İngilizce'}.`;
 };
 
@@ -69,14 +67,14 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     nav: { services: "NETWORK", prices: "HABERLER", gallery: "MİRAS", login: "KAPTAN PANELİ" },
     hero: {
       systemOnline: "ADA NEURAL LINK: ACTIVE",
-      subtitle: "Maritime Super-Intelligence. Ada, rotanızı ve konforunuzu ML tabanlı verilerle optimize eder.",
+      subtitle: "Maritime Super-Intelligence. Ada, rotanızı ve konforunuzu /docs klasöründeki teknik verilerle optimize eder.",
       ctaServices: "DİNAMİK TEKLİF AL",
       ctaListen: "BÖLGE REHBERİ"
     },
     widgets: { location: "LOKASYON", weather: "HAVA DURUMU", coordinates: "KOORDİNATLAR" },
     map: { title: "Bağlama Planı", subtitle: "Müsait yerleri keşfedin", legendAvailable: "Müsait", legendOccupied: "Dolu", legendSelected: "Seçili", bookAction: "Rezervasyon", details: "Detaylar" },
     vhf: {
-       openButton: "ADA CONSULT", placeholder: "Neural Pricing Engine Active...",
+       openButton: "ADA CONSULT", placeholder: "Neural Docs Synchronizing...",
        sending: "Transmitting...", signal: "SİNYAL: MÜKEMMEL", latency: "GECİKME: 3ms",
        payment: "GÜVENLİ ÖDEME", confirmed: "REZERVASYON ONAYI",
        ptthold: "ADA İLE KONUŞ", "ptt release": "TAMAM"
@@ -86,7 +84,7 @@ export const TRANSLATIONS: Record<Language, Translation> = {
     nav: { services: "NETWORK", prices: "NEWS", gallery: "HERITAGE", login: "CAPTAIN LOGIN" },
     hero: {
       systemOnline: "ADA NEURAL LINK: ACTIVE",
-      subtitle: "Maritime Super-Intelligence. Ada optimizes your voyage and comfort with ML-driven data analytics.",
+      subtitle: "Maritime Super-Intelligence. Ada optimizes your voyage with data-driven /docs analytics.",
       ctaServices: "GET DYNAMIC QUOTE", ctaListen: "AREA GUIDE"
     },
     widgets: { location: "LOCATION", weather: "WEATHER", coordinates: "COORDINATES" },
