@@ -13,7 +13,8 @@ export interface Message {
 }
 
 export interface LogEntry {
-  timestamp: string;
+  date: string; // ISO string format: YYYY-MM-DDTHH:mm:ss.sssZ
+  timestamp: string; // Display time: HH:mm
   type: 'NAVIGATION' | 'BOOKING' | 'CUSTOMS' | 'CONCIERGE' | 'SYSTEM';
   author: string;
   vessel?: string;
@@ -30,8 +31,8 @@ export interface MarinaConfig {
   coordinates: {
     lat: string;
     long: string;
-    nLat: number; // Numeric for distance calculation
-    nLong: number; // Numeric for distance calculation
+    nLat: number; 
+    nLong: number; 
   };
   contact: {
     phone: string;
