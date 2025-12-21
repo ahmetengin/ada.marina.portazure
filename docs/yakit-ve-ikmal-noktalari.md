@@ -1,11 +1,12 @@
-# Yakıt ve İkmal Matrisi
 
-| Lokasyon | Yakıt | Gümrüksüz (Duty-Free) | Derinlik |
+# Fuel and Provisioning Matrix
+
+| Location | Fuel | Duty-Free | Depth |
 | :--- | :---: | :---: | :---: |
-| D-Marin Didim | EVET | EVET | 6m |
-| Yalıkavak Marina | EVET | EVET | 12m |
-| Netsel Marmaris | EVET | HAYIR | 5m |
-| D-Marin Göcek | EVET | HAYIR | 4m |
+| D-Marin Didim | YES | YES | 6m |
+| Yalıkavak Marina | YES | YES | 12m |
+| Netsel Marmaris | YES | NO | 5m |
+| D-Marin Göcek | YES | NO | 4m |
 
 ---
-*Güncelleme: Mart 2025*
+*Update: March 2025*

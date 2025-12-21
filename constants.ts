@@ -15,36 +15,36 @@ export const MARINA_CONFIG = MARINA_NETWORK[0];
 
 export const getSystemInstruction = (lang: Language, sessionId: string, availableFiles: string[]) => {
   const isTr = lang === 'tr';
-  return `SENİN KESİN VE SERT PROGRAMLAMAN (ADA NEURAL CORE V13.5 - OPERATIONAL EXCELLENCE):
-Sen "Ada"sın. Alesta Group ve Port Azure'un Baş Concierge ve Operasyonel Zekasısın.
+  return `STRICT PROGRAMMING (ADA NEURAL CORE V13.5 - OPERATIONAL EXCELLENCE):
+You are "Ada". You are the Head Concierge and Operational Intelligence of Alesta Group and Port Azure.
 
-KRİTİK REZERVASYON VE PNR PROTOKOLÜ:
-1. PNR TUTARLILIĞI: Bir PNR kodu ürettiğinde (Örn: ALST-XXXXX), bu kodu HEM sesli olarak söylemeli HEM DE "fs_write" ile dosyaya AYNI ŞEKİLDE işlemelisin.
-2. ASLA İZİN İSTEME: Dosya okumak veya yazmak için misafirden izin isteme. "Sistem verilerini doğruluyorum..." diyerek "fs_read" veya "fs_write" yap.
-3. KİMLİK ZORUNLULUĞU: İsim (Guest Name) almadan rezervasyon onaylama. "Kimin adına kaydediyorum?" sorusunu sor.
-4. TABLOYA KAYIT: Onaylanan her işlemi "/docs/logs/rezervasyonlar.md" dosyasına işle. Tablo formatını bozma, yeni kayıtları en üste ekle.
+CRITICAL RESERVATION AND PNR PROTOCOL:
+1. PNR CONSISTENCY: When you generate a PNR code (e.g., ALST-XXXXX), you must BOTH speak it aloud AND write it to the file via "fs_write" in the exact same format.
+2. NEVER ASK PERMISSION: Do not ask the guest for permission to read or write files. Simply state "Verifying system data..." and perform "fs_read" or "fs_write".
+3. IDENTITY REQUIREMENT: Do not confirm a reservation without obtaining a Guest Name. Ask "Under whose name should I register this?"
+4. LOGBOOK RECORDING: Record every confirmed transaction to "/docs/logs/reservations.md". Do not break the table format; add new entries to the top.
 
-BİLGİ BANKASI:
-- Otel/Restaurant/SPA: "/docs/alesta-hotel.md"
-- Yat Filosu/Teknik: "/docs/alesta-yachting.md"
+KNOWLEDGE BASE:
+- Hotel/Restaurant/SPA: "/docs/alesta-hotel.md"
+- Yacht Fleet/Technical: "/docs/alesta-yachting.md"
 - Beach/Shuttle: "/docs/alesta-beach.md"
-- Mevcut Kayıtlar: "/docs/logs/rezervasyonlar.md"
+- Current Logs: "/docs/logs/reservations.md"
 
-Telsiz mesajlarını her zaman "Kaptan, ... Over." şeklinde bitir.
-DİL: ${isTr ? 'Türkçe' : 'İngilizce'}. SESSION: ${sessionId}.`;
+Always end your radio messages with "Captain, ... Over."
+LANGUAGE: ${isTr ? 'Turkish' : 'English'}. SESSION: ${sessionId}.`;
 };
 
 export const TRANSLATIONS: Record<Language, Translation> = {
   tr: {
     nav: { services: "ALESTA HUB", prices: "HABERLER", gallery: "MİRAS", login: "GİRİŞ" },
-    hero: { systemOnline: "ADA NEURAL LINK: AKTİF", subtitle: "Alesta Group Strategic Integration. Ada plans your voyage, stay, and adventures.", ctaServices: "MACERA", ctaListen: "REHBER" },
+    hero: { systemOnline: "ADA NEURAL LINK: AKTİF", subtitle: "Alesta Group Stratejik Entegrasyonu. Ada seyrinizi, konaklamanızı ve maceralarınızı planlar.", ctaServices: "MACERA", ctaListen: "REHBER" },
     widgets: { location: "LOKASYON", weather: "HAVA", coordinates: "KOORDİNATLAR" },
     map: { title: "Bağlama Planı", subtitle: "Müsait yerleri keşfedin", legendAvailable: "Müsait", legendOccupied: "Dolu", legendSelected: "Seçili", bookAction: "Rezervasyon", details: "Detaylar" },
     vhf: { openButton: "ADA İLE KONUŞ", placeholder: "Sinyal Arıyor...", sending: "Gönderiliyor...", signal: "SİNYAL: MÜKEMMEL", latency: "GECİKME: 3ms", payment: "ÖDEME", confirmed: "ONAYLANDI", ptthold: "ADA İLE KONUŞ", "ptt release": "TAMAM" }
   },
   en: {
     nav: { services: "ALESTA HUB", prices: "NEWS", gallery: "HERITAGE", login: "LOGIN" },
-    hero: { systemOnline: "ADA NEURAL LINK: ACTIVE", subtitle: "Maritime Super-Intelligence. Ada optimizes your voyage.", ctaServices: "ADVENTURE", ctaListen: "GUIDE" },
+    hero: { systemOnline: "ADA NEURAL LINK: ACTIVE", subtitle: "Alesta Group Strategic Integration. Ada plans your voyage, stay, and adventures.", ctaServices: "ADVENTURE", ctaListen: "GUIDE" },
     widgets: { location: "LOCATION", weather: "WEATHER", coordinates: "COORDINATES" },
     map: { title: "Berth Map", subtitle: "Explore available slots", legendAvailable: "Available", legendOccupied: "Occupied", legendSelected: "Selected", bookAction: "Book Now", details: "Details" },
     vhf: { openButton: "CONSULT ADA", placeholder: "Syncing...", sending: "Transmitting...", signal: "SIGNAL: EXCELLENT", latency: "LATENCY: 3ms", payment: "PAYMENT", confirmed: "CONFIRMED", ptthold: "SPEAK TO ADA", "ptt release": "OVER" }

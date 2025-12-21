@@ -1,29 +1,30 @@
-# Yat Prosedürleri ve Teknik Detaylar
 
-Özel teknelerin Türkiye ve Yunanistan arasındaki seyirlerinde dikkat etmesi gereken teknik ve bürokratik detaylar.
+# Yacht Procedures and Technical Details
 
-## 1. e-TEPAI (Yunanistan Seyir Vergisi)
-Yunanistan'da 7 metre üzerindeki tüm tekneler için zorunludur.
-*   **Ödeme:** Giriş yapmadan önce aade.gr adresi üzerinden yapılır.
-*   **Süre:** Aylık veya yıllık olarak ödenebilir. Ay ortasında giriş yapsanız dahi o ayın tam ücreti alınır.
-*   **Kontrol:** Liman polisi evrak kontrolünde TEPAI kodunuzu sorgulayacaktır.
+Technical and bureaucratic details that private boats must pay attention to during their cruises between Turkey and Greece.
 
-## 2. Mavi Kart (Türkiye Atık Takibi)
-Türkiye'den çıkış yaparken Mavi Kart (Blue Card) sisteminin güncel olduğundan emin olunmalıdır.
-*   **Atık Verme:** Çıkış öncesi atık tanklarının boşaltılması ve sisteme işlenmesi tavsiye edilir.
-*   **Yunanistan Dönüşü:** Yunanistan'dan dönerken atık tanklarının mühürlü olması gerekmez ancak Türkiye'ye girer girmez sisteme kayıtlı bir tesise atık verilmesi zorunludur.
+## 1. e-TEPAI (Greece Navigation Tax)
+Mandatory for all boats over 7 meters in Greece.
+*   **Payment:** Made via the aade.gr address before entry.
+*   **Duration:** Can be paid monthly or annually. Even if you enter in the middle of the month, the full fee for that month is charged.
+*   **Check:** Port police will query your TEPAI code during document inspection.
 
-## 3. Ekipman Gereklilikleri
-Yunanistan Liman Başkanlıkları aşağıdaki ekipmanların varlığını kontrol edebilir:
-*   Geçerli tarihli yangın söndürücüler.
-*   Mürettebat sayısı kadar can yeleği ve at nalı can simidi.
-*   Fişek takımı (Flare kit) - Tarihi geçmemiş olmalı.
-*   İlk yardım çantası (Uluslararası standartlarda).
+## 2. Blue Card (Turkey Waste Tracking)
+When exiting Turkey, it must be ensured that the Blue Card system is up to date.
+*   **Discharge:** It is recommended to empty waste tanks and record them in the system before departure.
+*   **Return from Greece:** Waste tanks do not need to be sealed when returning from Greece, but it is mandatory to give waste to a facility registered in the system as soon as you enter Turkey.
 
-## 4. İletişim Protokolü
-*   **VHF 16:** Acil durum ve çağrı kanalı.
-*   **VHF 11:** The Commodore's Cove (Göcek) giriş kanalı.
-*   **VHF 12:** Rodos / Symi Liman kontrol kanalları.
+## 3. Equipment Requirements
+Greek Port Authorities may check for the following equipment:
+*   Fire extinguishers with valid dates.
+*   Life jackets for each crew member and a horseshoe lifebuoy.
+*   Flare kit - Must not be expired.
+*   First aid kit (International standards).
+
+## 4. Communication Protocol
+*   **VHF 16:** Emergency and calling channel.
+*   **VHF 11:** The Commodore's Cove (Göcek) entry channel.
+*   **VHF 12:** Rhodes / Symi Port control channels.
 
 ---
-*Kaptan, Ada sizi her zaman 11. kanalda bekliyor. Selametle.*
+*Captain, Ada is always waiting for you on channel 11. Godspeed.*

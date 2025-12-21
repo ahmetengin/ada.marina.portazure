@@ -1,17 +1,18 @@
-# D-Marin Didim Teknik Operasyon Rehberi
 
-Didim, mega yat ikmali için stratejik bir "Bunker" (Yakıt) istasyonudur.
+# D-Marin Didim Technical Operations Guide
 
-## 1. Yakıt İstasyonu Detayları
-*   **İşletmeci:** D-Marin Fuel Point.
-*   **Kapasite:** 10 adet yüksek hızlı pompa.
-*   **Duty-Free Diesel:** Gümrüksüz yakıt imkanı mevcuttur (Çıkış işlemi yapan tekneler için).
-*   **Maksimum Draft:** Yakıt iskelesinde derinlik 6 metredir.
+Didim is a strategic "Bunker" (Fuel) station for mega yacht provisioning.
 
-## 2. Teknik Altyapı
-*   **Çekek Alanı:** 600 ton kapasiteli Travel Lift.
-*   **Elektrik:** 400 Amper'e kadar sanayi tipi elektrik (Mega yatlar için).
-*   **Gümrük (Customs):** Marina içinde 7/24 resmi pasaport ve gümrük muhafaza ofisi bulunur.
+## 1. Fuel Station Details
+*   **Operator:** D-Marin Fuel Point.
+*   **Capacity:** 10 high-speed pumps.
+*   **Duty-Free Diesel:** Duty-free fuel is available (for boats completing exit procedures).
+*   **Maximum Draft:** The depth at the fuel pier is 6 meters.
+
+## 2. Technical Infrastructure
+*   **Dry Dock Area:** 600-ton capacity Travel Lift.
+*   **Electricity:** Industrial-grade electricity up to 400 Amps (for mega yachts).
+*   **Customs:** A 24/7 official passport and customs enforcement office is located within the marina.
 
 ---
-*VHF: Kanal 72 | Mevki: 37°20'18"N 27°15'35"E*
+*VHF: Channel 72 | Position: 37°20'18"N 27°15'35"E*

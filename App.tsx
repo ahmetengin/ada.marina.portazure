@@ -33,14 +33,14 @@ import {
 import { Language, Slip } from './types';
 
 const INITIAL_VFS = {
-  '/docs/alesta-hotel.md': '# ALESTA YACHT HOTEL\n- 52 Özel Oda\n- Roof Restaurant\n- SPA & Wellness',
-  '/docs/alesta-yachting.md': '# ALESTA YACHTING\n- 14 Profesyonel Yat\n- Mavi Tur Operasyonları',
-  '/docs/alesta-beach.md': '# ALESTA BEACH CLUB\n- Aksazlar Koyu\n- Ücretsiz Shuttle Boat Hizmeti',
-  '/docs/logs/rezervasyonlar.md': '# REZERVASYON KAYITLARI\n| PNR | GUEST | SERVICE | DATE | STATUS |\n| :--- | :--- | :--- | :--- | :--- |\n| ALST-00000 | SYSTEM | INIT | 2025-01-01 | ACTIVE |',
+  '/docs/alesta-hotel.md': '# ALESTA YACHT HOTEL\n- 52 Private Rooms\n- Roof Restaurant\n- SPA & Wellness',
+  '/docs/alesta-yachting.md': '# ALESTA YACHTING\n- 14 Professional Yachts\n- Blue Cruise Operations',
+  '/docs/alesta-beach.md': '# ALESTA BEACH CLUB\n- Aksazlar Bay\n- Free Shuttle Boat Service',
+  '/docs/logs/reservations.md': '# RESERVATION LOGS\n| PNR | GUEST | SERVICE | DATE | STATUS |\n| :--- | :--- | :--- | :--- | :--- |\n| ALST-00000 | SYSTEM | INIT | 2025-01-01 | ACTIVE |',
 };
 
 const App: React.FC = () => {
-  const [lang, setLang] = useState<Language>('tr');
+  const [lang, setLang] = useState<Language>('en');
   const [isRadioActive, setIsRadioActive] = useState(false);
   const [isLogbookOpen, setIsLogbookOpen] = useState(false);
   const [activePath, setActivePath] = useState<string>('/docs/alesta-hotel.md');
@@ -97,11 +97,11 @@ const App: React.FC = () => {
       // Auto-log to VFS on successful booking
       const timestamp = new Date().toISOString().split('T')[0];
       const newEntry = `| ${pnr} | GUEST_WEB | BERTH_${bookingTrigger?.number} | ${timestamp} | CONFIRMED |`;
-      const currentLog = vfs['/docs/logs/rezervasyonlar.md'] || '';
+      const currentLog = vfs['/docs/logs/reservations.md'] || '';
       const lines = currentLog.split('\n');
       // Insert after header and alignment row
       lines.splice(4, 0, newEntry);
-      updateFile('/docs/logs/rezervasyonlar.md', lines.join('\n'));
+      updateFile('/docs/logs/reservations.md', lines.join('\n'));
     }, 2500);
   };
 
@@ -131,14 +131,14 @@ const App: React.FC = () => {
         
         <div className="flex items-center gap-8">
             <div className="hidden lg:flex gap-10 text-[10px] font-bold tracking-widest text-ivory-100/70 uppercase">
-                <button onClick={() => setIsLogbookOpen(true)} className="hover:text-brass-500 transition-colors flex items-center gap-2 font-bold tracking-widest"><HardDrive className="w-4 h-4" /> ARŞİV</button>
+                <button onClick={() => setIsLogbookOpen(true)} className="hover:text-brass-500 transition-colors flex items-center gap-2 font-bold tracking-widest"><HardDrive className="w-4 h-4" /> ARCHIVE</button>
                 <a href="#services" className="hover:text-brass-500 transition-colors tracking-widest">ALESTA HUB</a>
             </div>
             <button onClick={() => setLang(lang === 'tr' ? 'en' : 'tr')} className="text-[10px] font-bold tracking-widest border border-brass-500/30 px-4 py-2 hover:border-brass-500 transition-colors bg-white/5 uppercase">
                 <Globe className="w-4 h-4 inline mr-2" /> {lang}
             </button>
             <button className="hidden sm:block text-[10px] font-bold tracking-widest bg-brass-500 text-emerald-950 px-8 py-3 hover:bg-ivory-50 transition-all uppercase">
-                <User className="w-4 h-4 inline mr-2" /> GİRİŞ
+                <User className="w-4 h-4 inline mr-2" /> LOGIN
             </button>
         </div>
       </nav>

@@ -1,21 +1,22 @@
-# Marmaris & Güney Kıyıları Rehberi
 
-Marmaris, ağımızın teknik merkezi ve Hisarönü-Yeşilova körfezlerine açılan kapısıdır.
+# Marmaris & Southern Coasts Guide
 
-## 1. Marmaris Merkez Marinaları
-*   **Netsel Marina (VHF 06):** Kalenin yanında, şehrin kalbinde.
-*   **Marmaris Yacht Marina (VHF 14):** Dev kapasite ve teknik servis merkezi.
-*   **Albatros Marina:** Butik ve sakin konaklama.
+Marmaris is the technical hub of our network and the gateway to the Hisarönü and Yeşilova gulfs.
 
-## 2. Hisarönü & Bozburun (Koy Booking)
-Bu bölge "Booking.com" vizyonumuzun en kritik noktasıdır. Büyük marinalardan ziyade özel restoran iskeleleri hakimdir.
-*   **Selimiye:** Mavi sular ve butik restoran iskeleleri. (Sığlıklara dikkat!)
-*   **Bozburun:** Gulet yapım merkezi ve izole bağlama alanları.
-*   **Söğüt (Octopus/Kalamar):** Gurme deniz ürünleri iskeleleri.
+## 1. Marmaris Central Marinas
+*   **Netsel Marina (VHF 06):** In the heart of the city, next to the castle.
+*   **Marmaris Yacht Marina (VHF 14):** Giant capacity and technical service center.
+*   **Albatros Marina:** Boutique and quiet accommodation.
 
-## 3. Navigasyonel Uyarılar
-*   **Dişibilmez Burnu:** Sert rüzgar ve akıntı geçiş noktasıdır.
-*   **VHF Kapsamı:** Dağlık yapı nedeniyle bazı koylarda Ada ile iletişim için uydu bağlantısı tavsiye edilir.
+## 2. Bay Restaurants (Reservation Required)
+This region is the most critical point of our "Booking.com" vision. Private restaurant piers dominate rather than large marinas.
+*   **Selimiye:** Blue waters and boutique restaurant piers. (Watch out for shallows!)
+*   **Bozburun:** Gulet building center and isolated docking areas.
+*   **Söğüt (Octopus/Kalamar):** Gourmet seafood piers.
+
+## 3. Navigational Warnings
+*   **Dişibilmez Cape:** A point of strong wind and current crossing.
+*   **VHF Coverage:** Satellite connection is recommended for communication with Ada in some bays due to mountainous terrain.
 
 ---
-*Hazırlayan: Ada AI - Turquoise Coast Concierge*
+*Prepared by: Ada AI - Turquoise Coast Concierge*

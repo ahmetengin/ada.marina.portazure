@@ -1,44 +1,44 @@
 
-# Fethiye & Göcek Denizcilik ve Konaklama Rehberi
+# Fethiye & Göcek Maritime and Accommodation Guide
 
-Bu rehber, bölgedeki en popüler koylar ve Fethiye merkezli stratejik partnerimiz olan **Alesta Grubu** hakkında detaylı bilgiler içerir.
+This guide provides detailed information about the most popular bays in the region and our strategic partner based in Fethiye, the **Alesta Group**.
 
-## 1. Stratejik Partnerimiz: Alesta Yacht Hotel (Fethiye Merkez)
-The Commodore's Cove misafirleri için Fethiye'deki resmi konaklama partneridir. Marina karşısında, şehirle denizin birleştiği noktada lüks butik hizmet sunar.
+## 1. Our Strategic Partner: Alesta Yacht Hotel (Fethiye Center)
+The official accommodation partner for The Commodore's Cove guests in Fethiye. It offers luxury boutique services across from the marina, where the city meets the sea.
 
-### Otel Özellikleri ve İmkanlar:
-*   **Konaklama:** 52 adet özel tasarım oda. Çoğu oda Fethiye Körfezi manzaralıdır. "Suit" ve "Honeymoon" odalarında özel jakuzi imkanı bulunur.
-*   **Alesta Roof Restaurant:** Fethiye'nin en iyi manzarasına sahip çatı katı restoranı. Akdeniz ve Ege mutfağının seçkin örneklerini sunar. Gün batımı kokteylleri için idealdir.
+### Hotel Features and Amenities:
+*   **Accommodation:** 52 custom-designed rooms. Most rooms feature views of Fethiye Bay. "Suite" and "Honeymoon" rooms include private Jacuzzis.
+*   **Alesta Roof Restaurant:** The rooftop restaurant with the best view in Fethiye. Serves selected examples of Mediterranean and Aegean cuisine. Ideal for sunset cocktails.
 *   **Alesta Spa & Wellness:** 
-    *   Geleneksel Türk Hamamı (Mermer işçilikli).
-    *   Sauna ve Buhar Odası.
-    *   Uluslararası masaj terapileri (Bali, İsveç, Derin Doku).
-*   **Alesta Beach Club (Aksazlar):** Otele ait özel plaj kulübü. 
-    *   **Ulaşım:** Otelin tam önünden kalkan özel **Shuttle Boat** (Deniz Dolmuşu) ile ücretsiz ulaşım sağlanır.
-    *   **Deniz Keyfi:** Kristal berraklığında su ve korunaklı bir koyda lüks şezlong ve restoran hizmeti.
-*   **Toplantı ve Etkinlik:** 60 kişilik tam donanımlı "Alesta Meeting Room".
-*   **Lokasyon:** Fethiye Yat Limanı'nın tam karşısı. Ece Saray Marina'ya yürüme mesafesinde.
+    *   Traditional Turkish Bath (Marble-crafted).
+    *   Sauna and Steam Room.
+    *   International massage therapies (Bali, Swedish, Deep Tissue).
+*   **Alesta Beach Club (Aksazlar):** Private beach club belonging to the hotel. 
+    *   **Transportation:** Free transportation via private **Shuttle Boat** (Sea Taxi) departing directly in front of the hotel.
+    *   **Sea Pleasure:** Crystal clear water and luxury sunbeds with restaurant service in a sheltered bay.
+*   **Meetings and Events:** 60-person fully equipped "Alesta Meeting Room".
+*   **Location:** Directly opposite Fethiye Yacht Harbor. Walking distance to Ece Saray Marina.
 
-### Commodore Misafirlerine Özel:
-*   Öncelikli rezervasyon hakkı.
-*   Ada (AI Steward) üzerinden yapılan taleplerde SPA ve Restaurant için özel karşılama.
+### Special for Commodore Guests:
+*   Priority reservation rights.
+*   Special welcome for SPA and Restaurant requests made through Ada (AI Steward).
 
-## 2. Alesta Yachting (Deniz Operasyonları)
-*   **Geniş Filo:** Alesta Yachting bünyesinde toplam **14 adet profesyonel tekne** (Gulet ve Motor Yat) bulunmaktadır.
-*   **Hizmetler:** Profesyonel Gulet ve Yat kiralama (Mavi Tur), günlük özel turlar ve lüks deniz organizasyonları.
-*   **Teknik Destek:** Kendi bünyesindeki teknik ekiplerle marina içi servis desteği ve 14 teknelik filonun operasyonel tecrübesiyle her türlü denizcilik desteği sunulur.
-*   **VHF İletişim:** Kanal 16 üzerinden "Alesta Yachting" çağrısına yanıt verirler.
+## 2. Alesta Yachting (Maritime Operations)
+*   **Wide Fleet:** Alesta Yachting has a total of **14 professional vessels** (Gulete and Motor Yacht) in its fleet.
+*   **Services:** Professional Gulet and Yacht charter (Blue Cruise), private daily tours, and luxury maritime event organizations.
+*   **Technical Support:** Marina-wide service support with its own technical teams and maritime support with the operational experience of a 14-boat fleet.
+*   **VHF Communication:** Responds to "Alesta Yachting" calls on Channel 16.
 
-## 3. Fethiye'nin Eşsiz Koyları
-*   **Ölüdeniz & Belcekız:** Dünyaca ünlü lagün ve yamaç paraşütü merkezi.
-*   **Kelebekler Vadisi:** Sadece deniz yoluyla ulaşılabilen doğa harikası.
-*   **Şövalye Adası:** Fethiye körfezinin girişinde, üzerinde butik yerleşimler bulunan ada.
-*   **Turunç Pınarı:** Çam ağaçları arasında, sadece tekneyle ulaşılabilen restoranları ile meşhurdur.
+## 3. Unique Bays of Fethiye
+*   **Ölüdeniz & Belcekız:** World-famous lagoon and paragliding center.
+*   **Butterfly Valley:** A natural wonder accessible only by sea.
+*   **Knight Island:** An island at the entrance of Fethiye Bay with boutique settlements.
+*   **Turunç Pınarı:** Famous for its restaurants accessible only by boat, nestled among pine trees.
 
-## 4. Göcek'in Saklı Cennetleri
-*   **Bedri Rahmi Koyu:** Ressam Bedri Rahmi'nin kaya üzerine çizdiği balık resmiyle ünlüdür.
-*   **Hamam Koyu (Cleopatra’s Bath):** Suyun içindeki batık antik hamam kalıntıları.
-*   **Yassıca Adaları:** Korunaklı demirleme ve şnorkel alanları.
+## 4. Hidden Paradises of Göcek
+*   **Bedri Rahmi Bay:** Famous for the fish painting on a rock by artist Bedri Rahmi.
+*   **Hamam Bay (Cleopatra’s Bath):** Sunken ancient bath ruins in the water.
+*   **Yassıca Islands:** Sheltered anchoring and snorkeling areas.
 
 ---
-*Hazırlayan: Ada AI Steward - Commodore & Alesta Partnerlik Sistemi*
+*Prepared by: Ada AI Steward - Commodore & Alesta Partnership System*

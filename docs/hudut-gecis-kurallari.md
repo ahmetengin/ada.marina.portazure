@@ -1,15 +1,16 @@
-# Türkiye - Yunanistan Hudut Geçiş Kuralları
 
-Kaptanların gümrük geçişi öncesi kontrol etmesi gereken yasal prosedürler:
+# Turkey - Greece Border Crossing Rules
 
-## 1. Gerekli Belgeler
-- **Transit Log:** Türkiye çıkış damgası tam olmalı.
-- **TEPAI:** Yunanistan seyir vergisi online ödenmiş olmalı.
-- **Mavi Kart:** Atık tankı kaydı güncel olmalı.
+Legal procedures captains must check before customs clearance:
 
-## 2. Yasaklar
-- Yunan karasularında gri su deşarjı kesinlikle yasaktır.
-- Pasaportta K.K.T.C. damgası bulunmamalıdır.
+## 1. Required Documents
+- **Transit Log:** Turkey exit stamp must be complete.
+- **TEPAI:** Greece navigation tax must be paid online.
+- **Blue Card:** Waste tank record must be up to date.
+
+## 2. Prohibitions
+- Gray water discharge is strictly forbidden in Greek territorial waters.
+- The passport must not contain a T.R.N.C. (North Cyprus) stamp.
 
 ---
-*Ada AI Mevzuat Birimi*
+*Ada AI Legislation Department*

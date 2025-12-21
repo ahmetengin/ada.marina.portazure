@@ -1,21 +1,22 @@
-# Göcek & Fethiye Derinlemesine Bakış
 
-Ağımızın ana üssü ve en yoğun rezervasyon bölgesidir.
+# Göcek & Fethiye In-Depth Look
 
-## 1. Göcek Marinaları
-*   **The Commodore's Cove (Merkez):** En yüksek hizmet standartları, VHF 11.
-*   **Marinturk (Village/Exclusive):** Geniş kapasite.
-*   **Skopea Marina:** Butik şehir erişimi.
+The main base of our network and the busiest reservation area.
 
-## 2. Koy Restoranları (Rezervasyon Gerekli)
-*   **Boynuzbükü:** Yemyeşil doğa ve güvenli iskele.
-*   **Sarsala:** Turkuaz sular ve yerel lezzetler.
-*   **Adaia (Hamam Koyu):** Kültürel ve gastronomik deneyim.
+## 1. Göcek Marinas
+*   **The Commodore's Cove (Center):** Highest service standards, VHF 11.
+*   **Marinturk (Village/Exclusive):** Wide capacity.
+*   **Skopea Marina:** Boutique city access.
+
+## 2. Bay Restaurants (Reservation Required)
+*   **Boynuzbükü:** Lush green nature and a safe pier.
+*   **Sarsala:** Turquoise waters and local flavors.
+*   **Adaia (Hamam Bay):** A cultural and gastronomic experience.
 
 ## 3. Fethiye (Alesta Hub)
-*   **Ece Saray Marina:** Şehir içi lüks.
-*   **Alesta Yacht Hotel İskelesi:** Partner otelimiz önünde hızlı transfer noktası.
-*   **Yat Classic:** Ünlülerin tercihi, butik hizmet.
+*   **Ece Saray Marina:** Inner-city luxury.
+*   **Alesta Yacht Hotel Pier:** Fast transfer point in front of our partner hotel.
+*   **Yat Classic:** Celebrity choice, boutique service.
 
 ---
-*Not: Bu bölgelerdeki tüm tonoz ve iskeleler "Ada" üzerinden anlık kontrol edilebilir.*
+*Note: All moorings and piers in these regions can be checked in real-time through "Ada".*
