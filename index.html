@@ -4,9 +4,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>The Commodore's Cove | Heritage Marina & Yacht Club</title>
+    <title>Port Azure | Mediterranean Command Bridge</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
@@ -18,14 +18,9 @@
             },
             colors: {
               emerald: {
-                950: '#0a2a26', // Brightened from #050a09
-                900: '#133d37', // Brightened from #0a1a15
-                800: '#1a4f47',
-                700: '#256b61',
-              },
-              navy: {
-                950: '#0f172a',
-                900: '#1e293b',
+                950: '#020a09',
+                900: '#051412',
+                800: '#0a211e',
               },
               brass: {
                 400: '#e5c07b',
@@ -35,38 +30,29 @@
               ivory: {
                 50: '#fffcf5',
                 100: '#f9f3e6',
-                200: '#f1e8d4',
               }
             },
             animation: {
-              'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'float': 'float 6s ease-in-out infinite',
-            },
-            keyframes: {
-              float: {
-                '0%, 100%': { transform: 'translateY(0)' },
-                '50%': { transform: 'translateY(-15px)' },
-              }
+              'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'spin-slow': 'spin 12s linear infinite',
             }
           },
         },
       }
     </script>
     <style>
-      .scrollbar-hide::-webkit-scrollbar { display: none; }
-      .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-      .glass-panel {
-        background: rgba(255, 252, 245, 0.05);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(197, 160, 89, 0.15);
-      }
-      .brass-gradient {
-        background: linear-gradient(135deg, #c5a059 0%, #e5c07b 50%, #a38144 100%);
-      }
+      ::-webkit-scrollbar { width: 4px; }
+      ::-webkit-scrollbar-track { background: #020a09; }
+      ::-webkit-scrollbar-thumb { background: #c5a059; }
+      
+      .glass { background: rgba(2, 10, 9, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(197, 160, 89, 0.1); }
+      .brass-glow { box-shadow: 0 0 20px rgba(197, 160, 89, 0.2); }
+      .text-gradient { background: linear-gradient(135deg, #f9f3e6 0%, #c5a059 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      
       body {
-        background-color: #0a2a26;
+        background-color: #020a09;
         color: #f9f3e6;
-        background-image: radial-gradient(circle at 50% 0%, #133d37 0%, #0a2a26 100%);
+        overflow-x: hidden;
       }
     </style>
   <script type="importmap">
@@ -81,7 +67,7 @@
 }
 </script>
 </head>
-  <body class="antialiased overflow-x-hidden">
+  <body class="antialiased">
     <div id="root"></div>
   </body>
 </html>

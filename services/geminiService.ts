@@ -6,7 +6,8 @@ import { Language } from "../types";
 let chatSession: Chat | null = null;
 let aiClient: GoogleGenAI | null = null;
 
-export const initializeAI = (lang: Language = 'tr') => {
+// Added availableFiles parameter with default value to provide the required second argument to getSystemInstruction
+export const initializeAI = (lang: Language = 'tr', availableFiles: string[] = []) => {
   if (!process.env.API_KEY) return;
   
   if (!aiClient) {
@@ -16,7 +17,8 @@ export const initializeAI = (lang: Language = 'tr') => {
   chatSession = aiClient.chats.create({
     model: 'gemini-3-flash-preview',
     config: {
-      systemInstruction: getSystemInstruction(lang),
+      // Fixed: Provided "ada-default-session" as the second argument to match getSystemInstruction(lang, sessionId, availableFiles)
+      systemInstruction: getSystemInstruction(lang, "ada-default-session", availableFiles),
       temperature: 0.7,
       topP: 0.95,
       topK: 40,

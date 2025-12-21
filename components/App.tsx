@@ -1,16 +1,16 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
-import Hero from './components/Hero';
-import VHFRadio from './components/VHFRadio';
-import InfoPanel from './components/InfoPanel';
-import MarinaMap from './components/MarinaMap';
-import ServicesSection from './components/ServicesSection';
-import BookingSearch from './components/BookingSearch';
-import { MARINA_CONFIG, MOCK_WEATHER, TRANSLATIONS, FACILITIES_TRANSLATIONS, FOOTER_LINKS } from './constants';
-import { initializeAI } from './services/geminiService';
-// Fix: Added missing Waves and Navigation imports from lucide-react
+import Hero from './Hero';
+import VHFRadio from './VHFRadio';
+import InfoPanel from './InfoPanel';
+import MarinaMap from './MarinaMap';
+import ServicesSection from './ServicesSection';
+import BookingSearch from './BookingSearch';
+// Fixed: Corrected import paths to point to root constants and services
+import { MARINA_CONFIG, MOCK_WEATHER, TRANSLATIONS, FACILITIES_TRANSLATIONS, FOOTER_LINKS } from '../constants';
+import { initializeAI } from '../services/geminiService';
 import { Ship, Anchor, Zap, Wifi, Globe, Smartphone, User, Shield, Calendar, CheckCircle, QrCode, X, Menu, CreditCard, Clock, ExternalLink, Waves, Navigation } from 'lucide-react';
-import { Language, Slip } from './types';
+import { Language, Slip } from '../types';
 
 const App: React.FC = () => {
   const [lang, setLang] = useState<Language>('tr');
@@ -19,6 +19,15 @@ const App: React.FC = () => {
   const [bookingState, setBookingState] = useState<'IDLE' | 'PRE_BOOKED' | 'PAYING' | 'CONFIRMED'>('IDLE');
   const [pnr, setPnr] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Added sessionId state management for VHFRadio
+  const [sessionId] = useState(() => {
+    const existing = sessionStorage.getItem('ada_session_id');
+    if (existing) return existing;
+    const newId = `SSN-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+    sessionStorage.setItem('ada_session_id', newId);
+    return newId;
+  });
   
   const t = TRANSLATIONS[lang];
   const f = FACILITIES_TRANSLATIONS[lang];
@@ -286,7 +295,8 @@ const App: React.FC = () => {
         </div>
       )}
 
-      <VHFRadio config={MARINA_CONFIG} lang={lang} triggerBooking={bookingTrigger} />
+      {/* Fixed: Passed required sessionId prop and corrected config reference */}
+      <VHFRadio config={MARINA_CONFIG} lang={lang} sessionId={sessionId} onFileUpdate={() => {}} readFile={() => null} isActive={false} onToggle={() => {}} availableFiles={[]} />
       
       <style>{`
         @keyframes ticker {

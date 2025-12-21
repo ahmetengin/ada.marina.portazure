@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Utensils, Waves, Sparkles, Plane, Car, Wine } from 'lucide-react';
+import { Utensils, Waves, Sparkles, Plane, Ship, Wind, Compass, Map, Landmark, Hotel } from 'lucide-react';
 import { Language } from '../types';
 
 interface ServicesSectionProps {
@@ -9,39 +10,39 @@ interface ServicesSectionProps {
 const ServicesSection: React.FC<ServicesSectionProps> = ({ lang }) => {
   const content = {
     tr: {
-      title: "PREMIUM YAŞAM",
-      subtitle: "Sadece bir bağlama yeri değil, bir yaşam tarzı.",
+      title: "ALESTA STRATEGIC HUB",
+      subtitle: "Fethiye'nin kalbinde, denizden karaya tam entegre lüks hizmet ağı.",
       items: [
-        { icon: Utensils, label: "Fine Dining", desc: "Deniz manzaralı Michelin yıldızlı lezzetler." },
-        { icon: Waves, label: "Beach Club", desc: "Kristal berraklığında özel plaj ve lounge." },
-        { icon: Sparkles, label: "Wellness & Spa", desc: "Deniz tuzu terapileri ve masaj." },
-        { icon: Plane, label: "Heliport", desc: "VIP transfer ve helikopter pisti." },
-        { icon: Wine, label: "Yacht Provisions", desc: "Dünya mutfağından seçkin ikmaller." },
-        { icon: Car, label: "VIP Chauffeur", desc: "7/24 lüks araç ve şoför hizmeti." }
+        { icon: Hotel, label: "Alesta Yacht Hotel", desc: "52 özel tasarım oda, Marina manzaralı Roof Restaurant ve tam donanımlı SPA." },
+        { icon: Ship, label: "Alesta Yachting Filosu", desc: "14 profesyonel tekne ile kişiye özel Mavi Tur ve Gulet kiralama operasyonları." },
+        { icon: Waves, label: "Alesta Beach Club", desc: "Aksazlar Koyu'nda kristal sular. Otelden özel Shuttle Boat ile ücretsiz erişim." },
+        { icon: Map, label: "Likya Yolu Tracking", desc: "Fethiye'den başlayan antik patikalarda teknik rota rehberliği." },
+        { icon: Wind, label: "Babadağ Paraşüt", desc: "1960 metre zirveden Ölüdeniz'e eşsiz süzülüş koordinasyonu." },
+        { icon: Landmark, label: "Kültürel Miras", desc: "Kayaköy ve Tlos antik kentlerine rehberli tarih turları." }
       ]
     },
     en: {
-      title: "PREMIUM LIFESTYLE",
-      subtitle: "More than just a berth, it's a way of life.",
+      title: "ALESTA STRATEGIC HUB",
+      subtitle: "Fully integrated luxury service network from sea to land in the heart of Fethiye.",
       items: [
-        { icon: Utensils, label: "Fine Dining", desc: "Michelin-starred flavors with sea views." },
-        { icon: Waves, label: "Beach Club", desc: "Crystal clear private beach and lounge." },
-        { icon: Sparkles, label: "Wellness & Spa", desc: "Sea salt therapies and massage." },
-        { icon: Plane, label: "Heliport", desc: "VIP transfer and helipad access." },
-        { icon: Wine, label: "Yacht Provisions", desc: "Elite provisions from world cuisine." },
-        { icon: Car, label: "VIP Chauffeur", desc: "24/7 luxury car and driver service." }
+        { icon: Hotel, label: "Alesta Yacht Hotel", desc: "52 boutique rooms, Marina view Roof Restaurant and full-service SPA." },
+        { icon: Ship, label: "Alesta Yachting Fleet", desc: "14 professional vessels for bespoke Blue Cruise and Gulet charter ops." },
+        { icon: Waves, label: "Alesta Beach Club", desc: "Crystal waters at Aksazlar Bay. Free access via private Shuttle Boat from the hotel." },
+        { icon: Map, label: "Lycian Way Tracking", desc: "Technical route guidance on the ancient trails starting from Fethiye." },
+        { icon: Wind, label: "Babadağ Flight", desc: "Flight coordination from 1960m peak to Ölüdeniz." },
+        { icon: Landmark, label: "Heritage Tours", desc: "Guided historical tours to Kayaköy and Tlos ancient sites." }
       ]
     },
     de: {
-      title: "PREMIUM LEBENSSTIL",
-      subtitle: "Mehr als nur ein Liegeplatz, es ist eine Lebensart.",
+      title: "ALESTA STRATEGIC HUB",
+      subtitle: "Voll integriertes Luxus-Servicenetzwerk.",
       items: [
-        { icon: Utensils, label: "Fine Dining", desc: "Michelin-Sterne-Aromen mit Meerblick." },
-        { icon: Waves, label: "Beach Club", desc: "Kristallklarer Privatstrand und Lounge." },
-        { icon: Sparkles, label: "Wellness & Spa", desc: "Meersalztherapien und Massage." },
-        { icon: Plane, label: "Heliport", desc: "VIP-Transfer und Hubschrauberlandeplatz." },
-        { icon: Wine, label: "Yacht-Proviant", desc: "Elite-Proviant aus der Weltküche." },
-        { icon: Car, label: "VIP-Chauffeur", desc: "24/7 Luxusauto- und Fahrerservice." }
+        { icon: Hotel, label: "Alesta Yacht Hotel", desc: "52 Boutique-Zimmer, Roof Restaurant und SPA." },
+        { icon: Ship, label: "Alesta Yachting", desc: "14 professionelle Schiffe für Mavi Tur." },
+        { icon: Waves, label: "Alesta Beach Club", desc: "Klares Wasser in der Aksazlar-Bucht. Shuttle Boat Zugang." },
+        { icon: Map, label: "Lycian Way", desc: "Technische Routenführung." },
+        { icon: Wind, label: "Babadağ Paragliding", desc: "Flugkoordination." },
+        { icon: Landmark, label: "Kulturerbe", desc: "Geführte historische Touren." }
       ]
     }
   };
@@ -49,25 +50,25 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ lang }) => {
   const active = content[lang];
 
   return (
-    <section className="py-32 px-6 bg-navy-950 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent"></div>
+    <section className="py-24 md:py-32 px-6 bg-[#020a09] relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brass-500/30 to-transparent"></div>
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-20">
-          <span className="text-gold-500 text-xs tracking-[0.4em] uppercase mb-4 block font-bold">{active.title}</span>
-          <h2 className="font-serif text-4xl md:text-6xl text-white mb-6">Concierge <span className="italic text-gold-500">Excellence</span></h2>
-          <p className="text-slate-400 font-light max-w-2xl mx-auto">{active.subtitle}</p>
+        <div className="text-center mb-16 md:mb-24">
+          <span className="text-brass-500 text-[10px] md:text-xs tracking-[0.5em] uppercase mb-4 block font-bold">{active.title}</span>
+          <h2 className="font-heading text-3xl md:text-6xl text-white mb-6 uppercase tracking-tight">Executive <span className="italic text-brass-500 lowercase">Services</span></h2>
+          <p className="text-ivory-100/40 font-serif italic text-lg max-w-2xl mx-auto">{active.subtitle}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
           {active.items.map((item, i) => (
-            <div key={i} className="group p-8 border border-white/5 bg-navy-900/40 hover:bg-navy-900/80 transition-all duration-500 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-2 opacity-5">
-                <item.icon className="w-24 h-24" />
+            <div key={i} className="group p-8 md:p-10 border border-brass-500/5 bg-black/40 hover:bg-brass-500/5 transition-all duration-700 relative overflow-hidden shadow-2xl">
+              <div className="absolute -top-4 -right-4 p-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-700">
+                <item.icon className="w-32 h-32" />
               </div>
-              <item.icon className="w-10 h-10 text-gold-500 mb-6 group-hover:scale-110 transition-transform duration-500" />
-              <h3 className="text-white font-serif text-2xl mb-3 tracking-wide">{item.label}</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
-              <div className="mt-6 w-8 h-px bg-gold-500 group-hover:w-full transition-all duration-700"></div>
+              <item.icon className="w-10 h-10 text-brass-500 mb-8 group-hover:scale-110 transition-transform duration-700" />
+              <h3 className="text-ivory-50 font-heading text-2xl mb-4 tracking-wide uppercase">{item.label}</h3>
+              <p className="text-ivory-100/40 text-sm leading-relaxed font-light">{item.desc}</p>
+              <div className="mt-8 w-10 h-[1px] bg-brass-500/40 group-hover:w-full transition-all duration-1000"></div>
             </div>
           ))}
         </div>

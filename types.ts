@@ -1,25 +1,11 @@
 
 export type Language = 'tr' | 'en' | 'de';
-
 export type Region = 'DIDIM' | 'BODRUM' | 'MARMARIS' | 'GOCEK' | 'FETHIYE';
 
-export interface Message {
-  id: string;
-  role: 'user' | 'model' | 'system';
-  content: string;
-  timestamp: Date;
-  type?: 'text' | 'payment_request' | 'confirmation';
-  metadata?: any;
-}
-
-export interface LogEntry {
-  date: string; // ISO string format: YYYY-MM-DDTHH:mm:ss.sssZ
-  timestamp: string; // Display time: HH:mm
-  type: 'NAVIGATION' | 'BOOKING' | 'CUSTOMS' | 'CONCIERGE' | 'SYSTEM';
-  author: string;
-  vessel?: string;
-  subject: string;
+export interface TranscriptItem {
+  role: 'CAPTAIN' | 'ADA';
   text: string;
+  timestamp: string;
 }
 
 export interface MarinaConfig {
@@ -61,41 +47,9 @@ export interface Slip {
 }
 
 export interface Translation {
-  nav: {
-    services: string;
-    prices: string;
-    gallery: string;
-    login: string;
-  };
-  hero: {
-    systemOnline: string;
-    subtitle: string;
-    ctaServices: string;
-    ctaListen: string;
-  };
-  widgets: {
-    location: string;
-    weather: string;
-    coordinates: string;
-  };
-  map: {
-    title: string;
-    subtitle: string;
-    legendAvailable: string;
-    legendOccupied: string;
-    legendSelected: string;
-    bookAction: string;
-    details: string;
-  };
-  vhf: {
-    openButton: string;
-    placeholder: string;
-    sending: string;
-    signal: string;
-    latency: string;
-    payment: string;
-    confirmed: string;
-    ptthold: string;
-    "ptt release": string;
-  }
+  nav: { services: string; prices: string; gallery: string; login: string; };
+  hero: { systemOnline: string; subtitle: string; ctaServices: string; ctaListen: string; };
+  widgets: { location: string; weather: string; coordinates: string; };
+  map: { title: string; subtitle: string; legendAvailable: string; legendOccupied: string; legendSelected: string; bookAction: string; details: string; };
+  vhf: { openButton: string; placeholder: string; sending: string; signal: string; latency: string; payment: string; confirmed: string; ptthold: string; "ptt release": string; }
 }
