@@ -26,14 +26,18 @@ import {
   ShieldCheck,
   Smartphone,
   ExternalLink,
-  User
+  User,
+  Database
 } from 'lucide-react';
 import { Language, Slip, BookingStatus } from './types';
 
 const INITIAL_VFS = {
   '/docs/alesta-yacht-hotel.md': '# ALESTA YACHT HOTEL (Fethiye)\n- 52 boutique units directly across the harbor.\n- **Alarga Restaurant**: Rooftop gourmet dining with sunset view.\n- **Spa**: Traditional Turkish bath and wellness center.',
   '/docs/alesta-beach-club.md': '# ALESTA BEACH CLUB\n- Private beach at Aksazlar Bay.\n- **Shuttle**: Free boat transfer from the hotel pier every 30 minutes.\n- **Season**: Open from May 15 to October 15.',
-  '/docs/port-guide.md': '# PORT AZURE MARITIME ENTRY\n- **VHF Channel**: 11 (Call Sign: Ada)\n- **Coordinates**: 36°45\'09"N / 28°56\'24"E\n- Standby 24/7 for berthing coordination.',
+  '/docs/port-guide.md': '# PORT AZURE MARITIME ENTRY\n- **VHF Channel**: 11 (Call Sign: Ada)\n- **Coordinates**: 36°45\'09"N / 28°56\'24"E\n- Standby 24/7 for berthing coordination.\n- **Pricing**: Standard berth starts from €120/day.\n- **Check-in**: After 14:00. **Check-out**: Before 12:00.',
+  '/docs/safety-protocols.md': '# SAFETY & SECURITY\n- 24/7 CCTV Monitoring.\n- Fire fighting equipment at every 20 meters.\n- Professional diving team on standby for underwater hull inspection.',
+  '/docs/customs-guide.md': '# CUSTOMS & BORDER CONTROL\n- **Entry/Exit**: Official port of entry for Turkey.\n- **Required**: Transit Log, Blue Card (Waste), Ship Papers.\n- **Customs Hours**: 09:00 - 18:00 (Daily).',
+  '/docs/fuel-matrix.md': '# FUEL & PROVISIONING\n- **Diesel**: High-speed pumps available.\n- **Duty-Free**: Available for transit vessels (min 1000L).\n- **Depth at Fuel Dock**: 5.5 meters.',
   '/docs/logs/reservations.md': '# MASTER RESERVATION LOG\n| PNR | GUEST | BERTH | DATE | STATUS |\n| :--- | :--- | :--- | :--- | :--- |\n| ALST-00000 | SYSTEM | INIT | 2025-01-01 | ACTIVE |',
 };
 
@@ -44,9 +48,8 @@ const App: React.FC = () => {
   const [activePath, setActivePath] = useState<string>('/docs/port-guide.md');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
-  // VFS State Management
   const [vfs, setVfs] = useState<Record<string, string>>(() => {
-    const saved = localStorage.getItem('alesta_vfs_v16');
+    const saved = localStorage.getItem('alesta_vfs_v18');
     return saved ? JSON.parse(saved) : INITIAL_VFS;
   });
 
@@ -63,7 +66,7 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('alesta_vfs_v16', JSON.stringify(vfs));
+    localStorage.setItem('alesta_vfs_v18', JSON.stringify(vfs));
   }, [vfs]);
 
   useEffect(() => {
@@ -97,13 +100,13 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-navy-950 text-white font-sans selection:bg-azure-500 selection:text-white">
       
-      {/* Top Status Ticker - High Visibility */}
+      {/* Top Status Ticker */}
       <div className="fixed top-0 w-full z-[100] bg-azure-600 text-white h-10 flex items-center overflow-hidden shadow-xl border-b border-white/20">
         <div className="flex animate-[ticker_40s_linear_infinite] whitespace-nowrap gap-16 text-[11px] font-mono tracking-[0.2em] font-black uppercase items-center">
             <span className="flex items-center gap-3"><Navigation className="w-3.5 h-3.5" /> LAT: {MARINA_CONFIG.coordinates.lat} N</span>
             <span className="flex items-center gap-3"><Radio className="w-3.5 h-3.5 text-sunlight-400" /> VHF_CH: {MARINA_CONFIG.vhfChannel} (STANDBY)</span>
             <span className="flex items-center gap-3"><Waves className="w-3.5 h-3.5" /> TIDE: STABLE</span>
-            <span className="flex items-center gap-3"><ShieldCheck className="w-3.5 h-3.5" /> SYNC: SECURE</span>
+            <span className="flex items-center gap-3"><Database className="w-3.5 h-3.5 text-cyan-400" /> RAG_MODE: ACTIVE_INDEXING</span>
             <span className="flex items-center gap-3 opacity-90 font-bold"><Clock className="w-3.5 h-3.5" /> {new Date().toLocaleTimeString()}</span>
         </div>
       </div>
@@ -121,15 +124,15 @@ const App: React.FC = () => {
             </span>
         </div>
         
-        <div className="flex items-center gap-10">
-            <div className="hidden lg:flex gap-10 text-[12px] font-black tracking-[0.25em] text-white uppercase">
+        <div className="flex items-center gap-10 text-[12px] font-black tracking-[0.25em] text-white uppercase">
+            <div className="hidden lg:flex gap-10">
                 <a href="#services" className="hover:text-azure-400 transition-all border-b-2 border-transparent hover:border-azure-500 pb-1">Hizmetler</a>
                 <a href="#operations" className="hover:text-azure-400 transition-all border-b-2 border-transparent hover:border-azure-500 pb-1">Bağlama Planı</a>
                 <button 
                   onClick={() => setIsLogbookOpen(true)} 
                   className="hover:text-azure-400 transition-all border-b-2 border-transparent hover:border-azure-500 pb-1 flex items-center gap-2"
                 >
-                  <HardDrive className="w-4 h-4" /> Arşiv
+                  <HardDrive className="w-4 h-4" /> RAG Arşivi
                 </button>
             </div>
 
@@ -152,8 +155,8 @@ const App: React.FC = () => {
 
       {/* Floating ADA AI Button */}
       <div className="fixed bottom-10 right-10 z-[100] flex flex-col items-end gap-5">
-          <div className="bg-navy-900 border-2 border-azure-500/40 px-5 py-2.5 rounded-2xl text-[10px] font-black tracking-[0.3em] text-azure-400 uppercase animate-fade-in shadow-2xl">
-             VHF CH 11 // STANDBY
+          <div className="bg-navy-900 border-2 border-azure-500/40 px-5 py-2.5 rounded-2xl text-[10px] font-black tracking-[0.3em] text-azure-400 uppercase shadow-2xl backdrop-blur-md">
+             RAG GROUNDING // ONLINE
           </div>
           <button 
             onClick={() => setIsRadioActive(true)}
@@ -243,7 +246,7 @@ const App: React.FC = () => {
               {bookingState === 'PAYING' && (
                 <div className="flex flex-col items-center justify-center py-24 animate-fade-in">
                    <div className="w-20 h-20 border-t-4 border-azure-400 rounded-full animate-spin mb-10"></div>
-                   <h3 className="font-heading text-2xl text-white tracking-[0.2em] uppercase">İŞLEM YAPILIYOR...</h3>
+                   <h3 className="font-heading text-2xl text-white tracking-[0.2em] uppercase">BAĞLANTI KURULUYOR...</h3>
                 </div>
               )}
 
@@ -254,12 +257,12 @@ const App: React.FC = () => {
                    </div>
                    <h2 className="font-heading text-4xl text-white mb-4 uppercase tracking-tight">İŞLEM BAŞARILI</h2>
                    <p className="text-[11px] text-azure-400/60 tracking-[0.5em] uppercase mb-12 font-black font-mono">REFERANS: {pnr}</p>
-                   <div className="bg-white p-6 rounded-3xl mb-12 inline-block"><QrCode className="w-40 h-40 text-navy-950" /></div>
+                   <div className="bg-white p-6 rounded-3xl mb-12 inline-block shadow-2xl"><QrCode className="w-40 h-40 text-navy-950" /></div>
                    <button 
                     onClick={() => setBookingState('IDLE')} 
                     className="w-full py-6 bg-navy-950 border-2 border-azure-500/30 text-azure-400 font-black tracking-[0.3em] uppercase hover:bg-azure-600 hover:text-white transition-all rounded-2xl"
                    >
-                    KAPAT
+                    ANA SAYFAYA DÖN
                    </button>
                 </div>
               )}
@@ -279,13 +282,13 @@ const App: React.FC = () => {
             Alesta Group Network'ün bir parçasıdır.
           </p>
           <div className="flex justify-center flex-wrap gap-12 text-[12px] font-black tracking-[0.25em] text-white/30 uppercase mb-20">
-            <a href="#" className="hover:text-azure-400 transition-colors">Güvenlik</a>
+            <a href="#" className="hover:text-azure-400 transition-colors">Güvenlik Protokolleri</a>
             <a href="#" className="hover:text-azure-400 transition-colors">Liman Kuralları</a>
             <a href="#" className="hover:text-azure-400 transition-colors">VHF İletişim</a>
             <a href="#" className="hover:text-azure-400 transition-colors">Gizlilik</a>
           </div>
           <div className="text-[11px] text-white/20 tracking-[0.4em] uppercase font-mono font-bold">
-            © 2025 PORT AZURE MARITIME // SYNC_CORE_V16
+            © 2025 PORT AZURE MARITIME // RAG_CORE_V18
           </div>
         </div>
       </footer>

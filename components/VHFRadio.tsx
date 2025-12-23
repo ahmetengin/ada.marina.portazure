@@ -1,11 +1,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Mic, MicOff, X, Radio, Activity, MessageSquareQuote, Zap, ShieldCheck } from 'lucide-react';
+import { Mic, MicOff, X, Radio, Activity, MessageSquareQuote, Zap, ShieldCheck, Database, Search, FileText, Loader2 } from 'lucide-react';
 import { GoogleGenAI, LiveServerMessage, Type, FunctionDeclaration, Modality } from "@google/genai";
 import { MarinaConfig, Language } from '../types';
 import { getSystemInstruction } from '../constants';
 
-// Precise Base64 encoding/decoding
 function encode(bytes: Uint8Array) {
   let binary = '';
   for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
@@ -44,7 +43,7 @@ function createBlob(data: Float32Array): { data: string; mimeType: string } {
 const tools: FunctionDeclaration[] = [
   { 
     name: 'fs_read', 
-    description: 'Read the content of a file from the virtual file system.',
+    description: 'Ground the model response by reading a specific file from the RAG store.',
     parameters: { 
       type: Type.OBJECT, 
       properties: { path: { type: Type.STRING, description: 'The absolute path to the file.' } }, 
@@ -79,9 +78,11 @@ interface VHFRadioProps {
 const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, sessionId, onFileUpdate, readFile, isActive, onToggle, availableFiles }) => {
   const [isTransmitting, setIsTransmitting] = useState(true);
   const isTransmittingRef = useRef(isTransmitting);
-  const [status, setStatus] = useState<'IDLE' | 'RX' | 'TX' | 'SYNCING'>('IDLE');
+  const [status, setStatus] = useState<'IDLE' | 'RX' | 'TX' | 'GROUNDING'>('IDLE');
+  const [activeGroundingFile, setActiveGroundingFile] = useState<string | null>(null);
   const [liveInputText, setLiveInputText] = useState('');
   const [liveOutputText, setLiveOutputText] = useState('');
+  const [citations, setCitations] = useState<string[]>([]);
   
   const sessionRef = useRef<any>(null);
   const inputCtxRef = useRef<AudioContext | null>(null);
@@ -106,6 +107,8 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, sessionId, onFileUpda
     setStatus('IDLE');
     setLiveInputText('');
     setLiveOutputText('');
+    setActiveGroundingFile(null);
+    setCitations([]);
   };
 
   const connect = async () => {
@@ -113,11 +116,9 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, sessionId, onFileUpda
       if (!process.env.API_KEY) return;
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       
-      // Initialize Contexts
       if (!inputCtxRef.current) inputCtxRef.current = new AudioContext({ sampleRate: 16000 });
       if (!outputCtxRef.current) outputCtxRef.current = new AudioContext({ sampleRate: 24000 });
       
-      // CRITICAL: Resume contexts to bypass autoplay blocking
       await inputCtxRef.current.resume();
       await outputCtxRef.current.resume();
       
@@ -127,7 +128,7 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, sessionId, onFileUpda
         model: 'gemini-2.5-flash-native-audio-preview-09-2025',
         config: {
           responseModalities: [Modality.AUDIO],
-          systemInstruction: getSystemInstruction(lang, sessionId, availableFiles),
+          systemInstruction: getSystemInstruction(lang, sessionId, availableFiles) + "\nALWAYS use 'fs_read' for specific details like pricing, menus, or procedures. Grounding is mandatory for factual accuracy.",
           speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
           tools: [{ functionDeclarations: tools }],
           outputAudioTranscription: {},
@@ -142,16 +143,28 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, sessionId, onFileUpda
             if (msg.serverContent?.interrupted) {
               stopAllAudio();
               setStatus('IDLE');
+              setActiveGroundingFile(null);
             }
 
             if (msg.serverContent?.turnComplete) { 
               setLiveInputText(''); 
               setLiveOutputText(''); 
+              setActiveGroundingFile(null);
             }
 
             if (msg.toolCall) {
+              setStatus('GROUNDING');
               for (const fc of msg.toolCall.functionCalls) {
-                let res = fc.name === 'fs_read' ? readFile(fc.args.path as string) || "File not found" : "Operation Success";
+                let res = "File not found";
+                if (fc.name === 'fs_read') {
+                  const path = fc.args.path as string;
+                  setActiveGroundingFile(path);
+                  res = readFile(path) || "File not found";
+                  if (res !== "File not found") {
+                    setCitations(prev => Array.from(new Set([...prev, path])));
+                  }
+                }
+                
                 if (fc.name === 'fs_write') onFileUpdate(fc.args.path as string, fc.args.content as string);
                 
                 sessionPromise.then(s => s.sendToolResponse({ 
@@ -207,14 +220,28 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, sessionId, onFileUpda
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 backdrop-blur-xl bg-navy-950/80 animate-fade-in overflow-hidden">
-       <div className="relative w-full max-w-xl flex flex-col gap-6">
+       <div className="relative w-full max-w-2xl flex flex-col gap-6">
           <div className="bg-navy-900 border-2 border-azure-500/30 rounded-[3rem] flex flex-col overflow-hidden shadow-2xl ring-1 ring-white/10">
+             
+             {/* Header */}
              <div className="p-8 flex justify-between items-center bg-navy-950/50 border-b border-azure-500/10">
                 <div className="flex items-center gap-4">
-                   <div className={`w-3 h-3 rounded-full ${status === 'RX' ? 'bg-cyan-400 animate-ping shadow-[0_0_15px_#22d3ee]' : 'bg-azure-500'}`}></div>
-                   <span className="text-[10px] font-mono font-black text-azure-400 tracking-widest uppercase">ADA LIVE CONCIERGE // VHF CH 11</span>
+                   <div className={`w-3 h-3 rounded-full ${status === 'RX' ? 'bg-cyan-400 animate-ping shadow-[0_0_15px_#22d3ee]' : status === 'GROUNDING' ? 'bg-sunlight-500 animate-pulse' : 'bg-azure-500'}`}></div>
+                   <span className="text-[10px] font-mono font-black text-azure-400 tracking-widest uppercase">ADA LIVE RAG // VHF CH 11</span>
                 </div>
                 <button onClick={onToggle} className="p-3 bg-white/5 rounded-full text-white hover:bg-white/10 transition-colors"><X className="w-5 h-5" /></button>
+             </div>
+
+             {/* RAG Grounding Indicator */}
+             <div className={`px-12 py-3 bg-azure-950/40 border-b border-azure-500/10 flex items-center justify-between transition-all duration-500 ${status === 'GROUNDING' ? 'opacity-100 h-14' : 'opacity-0 h-0 overflow-hidden'}`}>
+                <div className="flex items-center gap-3">
+                   <Database className="w-4 h-4 text-sunlight-400 animate-float" />
+                   <span className="text-[9px] font-black text-white/40 tracking-[0.2em] uppercase">GROUNDING:</span>
+                </div>
+                <div className="flex items-center gap-2">
+                   <span className="text-[10px] font-mono text-sunlight-500 font-bold uppercase truncate max-w-[200px]">{activeGroundingFile?.split('/').pop()}</span>
+                   <Loader2 className="w-3 h-3 text-sunlight-400 animate-spin" />
+                </div>
              </div>
 
              <div className="p-12 flex flex-col items-center gap-10">
@@ -223,11 +250,11 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, sessionId, onFileUpda
                   className={`w-40 h-40 rounded-full border-4 flex flex-col items-center justify-center gap-4 transition-all duration-500 relative group active:scale-95 ${isTransmitting ? 'bg-azure-600 border-azure-400 text-white shadow-[0_20px_50px_rgba(14,165,233,0.3)]' : 'bg-navy-950 border-azure-500/20 text-azure-400/30 hover:border-azure-400'}`}
                 >
                    {isTransmitting ? <Mic className="w-12 h-12 animate-pulse" /> : <MicOff className="w-12 h-12" />}
-                   <span className="text-[10px] font-black tracking-[0.2em] uppercase">{isTransmitting ? 'SESİNİZ ALINIYOR' : 'SESİNİZ KAPALI'}</span>
+                   <span className="text-[10px] font-black tracking-[0.2em] uppercase">{isTransmitting ? 'ADAYA SESLENİN' : 'SESİNİZ KAPALI'}</span>
                    <div className="absolute inset-0 rounded-full border-4 border-azure-400 opacity-0 group-hover:opacity-100 transition-opacity scale-105 pointer-events-none"></div>
                 </button>
                 
-                <div className="w-full min-h-[160px] flex flex-col gap-6 px-10 py-10 bg-navy-950 border-2 border-azure-500/10 rounded-[2.5rem] relative overflow-hidden group">
+                <div className="w-full min-h-[180px] flex flex-col gap-6 px-10 py-10 bg-navy-950 border-2 border-azure-500/10 rounded-[2.5rem] relative overflow-hidden group">
                    <div className="absolute top-0 left-0 w-full h-1 bg-azure-500/20"></div>
                    {liveInputText ? (
                      <div className="animate-fade-in flex items-start gap-4">
@@ -238,13 +265,26 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, sessionId, onFileUpda
                      <div className="w-full text-center text-[10px] text-azure-400/20 tracking-[0.4em] uppercase animate-pulse font-bold mt-10">Sinyal bekleniyor...</div>
                    )}
                    {liveOutputText && (
-                     <div className="animate-fade-in flex items-start gap-4 border-t border-white/5 pt-6">
-                        <span className="text-[9px] font-black text-cyan-400 uppercase mt-1">ADA:</span>
-                        <div className="text-white font-sans text-sm leading-relaxed font-bold">
-                          <MessageSquareQuote className="w-4 h-4 inline mr-2 text-azure-400 opacity-40" />
-                          {liveOutputText}
-                          <span className="w-1.5 h-4 bg-azure-500 inline-block ml-1 animate-pulse"></span>
+                     <div className="animate-fade-in flex flex-col gap-4 border-t border-white/5 pt-6">
+                        <div className="flex items-start gap-4">
+                          <span className="text-[9px] font-black text-cyan-400 uppercase mt-1">ADA:</span>
+                          <div className="text-white font-sans text-sm leading-relaxed font-bold">
+                            <MessageSquareQuote className="w-4 h-4 inline mr-2 text-azure-400 opacity-40" />
+                            {liveOutputText}
+                            <span className="w-1.5 h-4 bg-azure-500 inline-block ml-1 animate-pulse"></span>
+                          </div>
                         </div>
+
+                        {/* Citation Chips */}
+                        {citations.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-2">
+                             {citations.map((path, idx) => (
+                               <div key={idx} className="flex items-center gap-2 bg-azure-900/40 border border-azure-500/20 px-3 py-1 rounded-full text-[8px] font-bold text-azure-400 uppercase tracking-widest animate-fade-in">
+                                  <FileText className="w-2.5 h-2.5" /> {path.split('/').pop()}
+                               </div>
+                             ))}
+                          </div>
+                        )}
                      </div>
                    )}
                 </div>
@@ -253,20 +293,20 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, sessionId, onFileUpda
              <div className="p-8 bg-azure-900 border-t border-white/10 flex justify-between items-center px-12 text-white">
                 <div className="flex items-center gap-6">
                    <div className="flex flex-col">
-                      <span className="text-[8px] font-black opacity-60 uppercase">Frekans</span>
-                      <span className="text-xs font-mono font-bold tracking-widest">{config.vhfChannel}.00 MHZ</span>
+                      <span className="text-[8px] font-black opacity-60 uppercase">RAG Engine</span>
+                      <span className="text-xs font-mono font-bold tracking-widest uppercase">SYNCED_V18</span>
                    </div>
                    <div className="w-px h-8 bg-white/10"></div>
-                   <div className="flex flex-col">
-                      <span className="text-[8px] font-black opacity-60 uppercase">Bağlantı</span>
-                      <span className="text-xs font-mono font-bold tracking-widest uppercase">AKTİF_V16</span>
+                   <div className="flex items-center gap-3">
+                      <Zap className="w-4 h-4 text-sunlight-400 animate-pulse" />
+                      <span className="text-xs font-mono font-bold tracking-widest uppercase">REALTIME</span>
                    </div>
                 </div>
                 <div className="flex items-center gap-3">
                    <Activity className="w-4 h-4 text-cyan-400" />
-                   <div className="flex gap-0.5">
-                      <div className="w-1 h-3 bg-white/20"></div>
-                      <div className="w-1 h-4 bg-white/40"></div>
+                   <div className="flex gap-0.5 items-end h-5">
+                      <div className="w-1 h-2 bg-white/20"></div>
+                      <div className="w-1 h-3 bg-white/40"></div>
                       <div className="w-1 h-5 bg-white/60"></div>
                       <div className="w-1 h-6 bg-white"></div>
                    </div>

@@ -4,12 +4,15 @@ import { MOCK_SLIPS } from '../constants';
 import { Language, Slip } from '../types';
 import { Wifi, Zap, Droplets, Terminal, ShieldCheck, Anchor, Activity, Info, Ruler } from 'lucide-react';
 
+// Added lang and searchCriteria to MarinaMapProps to fix type errors in parent components
 interface MarinaMapProps {
   lang: Language;
   onBookSlip: (slip: Slip) => void;
+  searchCriteria?: any;
 }
 
-const MarinaMap: React.FC<MarinaMapProps> = ({ onBookSlip }) => {
+// Fixed: Destructured lang and searchCriteria from props
+const MarinaMap: React.FC<MarinaMapProps> = ({ lang, onBookSlip, searchCriteria }) => {
   const [hoveredSlip, setHoveredSlip] = useState<string | null>(null);
 
   return (
