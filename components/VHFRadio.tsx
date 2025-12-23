@@ -1,54 +1,65 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Mic, MicOff, X, Radio, Terminal, Activity, MessageSquareQuote, Cpu, ShieldCheck } from 'lucide-react';
+import { Mic, MicOff, X, Radio, Activity, MessageSquareQuote, Zap, ShieldCheck } from 'lucide-react';
 import { GoogleGenAI, LiveServerMessage, Type, FunctionDeclaration, Modality } from "@google/genai";
-import { MarinaConfig, Language, TranscriptItem } from '../types';
+import { MarinaConfig, Language } from '../types';
 import { getSystemInstruction } from '../constants';
 
-// Audio Utils
+// Precise Base64 encoding/decoding
 function encode(bytes: Uint8Array) {
   let binary = '';
   for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
   return btoa(binary);
 }
+
 function decode(base64: string) {
   const binaryString = atob(base64);
   const bytes = new Uint8Array(binaryString.length);
   for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
   return bytes;
 }
+
 async function decodeAudioData(data: Uint8Array, ctx: AudioContext, sampleRate: number, numChannels: number): Promise<AudioBuffer> {
   const dataInt16 = new Int16Array(data.buffer);
   const frameCount = dataInt16.length / numChannels;
   const buffer = ctx.createBuffer(numChannels, frameCount, sampleRate);
   for (let channel = 0; channel < numChannels; channel++) {
     const channelData = buffer.getChannelData(channel);
-    for (let i = 0; i < frameCount; i++) channelData[i] = dataInt16[i * numChannels + channel] / 32768.0;
+    for (let i = 0; i < frameCount; i++) {
+      channelData[i] = dataInt16[i * numChannels + channel] / 32768.0;
+    }
   }
   return buffer;
 }
+
 function createBlob(data: Float32Array): { data: string; mimeType: string } {
   const int16 = new Int16Array(data.length);
   for (let i = 0; i < data.length; i++) int16[i] = data[i] * 32768;
-  return { data: encode(new Uint8Array(int16.buffer)), mimeType: 'audio/pcm;rate=16000' };
+  return { 
+    data: encode(new Uint8Array(int16.buffer)), 
+    mimeType: 'audio/pcm;rate=16000' 
+  };
 }
 
 const tools: FunctionDeclaration[] = [
   { 
     name: 'fs_read', 
+    description: 'Read the content of a file from the virtual file system.',
     parameters: { 
       type: Type.OBJECT, 
-      description: 'Zorunlu: Dosya içeriğini okur.', 
-      properties: { path: { type: Type.STRING } }, 
+      properties: { path: { type: Type.STRING, description: 'The absolute path to the file.' } }, 
       required: ['path'] 
     } 
   },
   { 
     name: 'fs_write', 
+    description: 'Write or update a file on the virtual file system.',
     parameters: { 
       type: Type.OBJECT, 
-      description: 'Rezervasyon veya log kaydı yapar.', 
-      properties: { path: { type: Type.STRING }, content: { type: Type.STRING } }, 
+      properties: { 
+        path: { type: Type.STRING, description: 'The absolute path to the file.' },
+        content: { type: Type.STRING, description: 'The full content to write.' }
+      }, 
       required: ['path', 'content'] 
     } 
   }
@@ -65,32 +76,36 @@ interface VHFRadioProps {
   availableFiles: string[];
 }
 
-const VHFRadio: React.FC<VHFRadioProps> = ({ lang, sessionId, onFileUpdate, readFile, isActive, onToggle, availableFiles }) => {
-  const [powerOn, setPowerOn] = useState(false);
+const VHFRadio: React.FC<VHFRadioProps> = ({ config, lang, sessionId, onFileUpdate, readFile, isActive, onToggle, availableFiles }) => {
   const [isTransmitting, setIsTransmitting] = useState(true);
+  const isTransmittingRef = useRef(isTransmitting);
   const [status, setStatus] = useState<'IDLE' | 'RX' | 'TX' | 'SYNCING'>('IDLE');
-  const [transcript, setTranscript] = useState<TranscriptItem[]>([]);
-  const [showArchive, setShowArchive] = useState(false);
-  
   const [liveInputText, setLiveInputText] = useState('');
   const [liveOutputText, setLiveOutputText] = useState('');
   
-  const inputBufferRef = useRef('');
-  const outputBufferRef = useRef('');
-
   const sessionRef = useRef<any>(null);
   const inputCtxRef = useRef<AudioContext | null>(null);
   const outputCtxRef = useRef<AudioContext | null>(null);
   const nextStartTimeRef = useRef<number>(0);
   const activeSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
 
-  const disconnect = () => {
-    if (sessionRef.current) { try { sessionRef.current.close(); } catch(e) {} }
-    sessionRef.current = null;
-    activeSourcesRef.current.forEach(s => s.stop());
+  useEffect(() => { isTransmittingRef.current = isTransmitting; }, [isTransmitting]);
+
+  const stopAllAudio = () => {
+    activeSourcesRef.current.forEach(s => { try { s.stop(); } catch(e) {} });
     activeSourcesRef.current.clear();
-    setPowerOn(false);
+    nextStartTimeRef.current = 0;
+  };
+
+  const disconnect = () => {
+    if (sessionRef.current) {
+      sessionRef.current.then((session: any) => { try { session.close(); } catch(e) {} });
+    }
+    sessionRef.current = null;
+    stopAllAudio();
     setStatus('IDLE');
+    setLiveInputText('');
+    setLiveOutputText('');
   };
 
   const connect = async () => {
@@ -98,12 +113,14 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ lang, sessionId, onFileUpdate, read
       if (!process.env.API_KEY) return;
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       
+      // Initialize Contexts
       if (!inputCtxRef.current) inputCtxRef.current = new AudioContext({ sampleRate: 16000 });
       if (!outputCtxRef.current) outputCtxRef.current = new AudioContext({ sampleRate: 24000 });
       
-      if (inputCtxRef.current.state === 'suspended') await inputCtxRef.current.resume();
-      if (outputCtxRef.current.state === 'suspended') await outputCtxRef.current.resume();
-
+      // CRITICAL: Resume contexts to bypass autoplay blocking
+      await inputCtxRef.current.resume();
+      await outputCtxRef.current.resume();
+      
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
       const sessionPromise = ai.live.connect({
@@ -117,49 +134,32 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ lang, sessionId, onFileUpdate, read
           inputAudioTranscription: {}
         },
         callbacks: {
-          onopen: () => {
-            setPowerOn(true);
-            setStatus('IDLE');
-          },
+          onopen: () => setStatus('IDLE'),
           onmessage: async (msg: LiveServerMessage) => {
-            // Partial Transcriptions
-            if (msg.serverContent?.inputTranscription) {
-              inputBufferRef.current += msg.serverContent.inputTranscription.text;
-              setLiveInputText(inputBufferRef.current);
-            }
-            if (msg.serverContent?.outputTranscription) {
-              outputBufferRef.current += msg.serverContent.outputTranscription.text;
-              setLiveOutputText(outputBufferRef.current);
+            if (msg.serverContent?.inputTranscription) setLiveInputText(msg.serverContent.inputTranscription.text);
+            if (msg.serverContent?.outputTranscription) setLiveOutputText(prev => prev + msg.serverContent!.outputTranscription!.text);
+            
+            if (msg.serverContent?.interrupted) {
+              stopAllAudio();
+              setStatus('IDLE');
             }
 
-            // End of Turn
-            if (msg.serverContent?.turnComplete) {
-              if (inputBufferRef.current || outputBufferRef.current) {
-                setTranscript(prev => [
-                  ...prev,
-                  ...(inputBufferRef.current ? [{ role: 'CAPTAIN', text: inputBufferRef.current, timestamp: new Date().toLocaleTimeString() }] as any : []),
-                  ...(outputBufferRef.current ? [{ role: 'ADA', text: outputBufferRef.current, timestamp: new Date().toLocaleTimeString() }] as any : [])
-                ]);
-                inputBufferRef.current = '';
-                outputBufferRef.current = '';
-              }
+            if (msg.serverContent?.turnComplete) { 
+              setLiveInputText(''); 
+              setLiveOutputText(''); 
             }
 
-            // Tools
             if (msg.toolCall) {
-              setStatus('SYNCING');
               for (const fc of msg.toolCall.functionCalls) {
-                let res = "";
-                if (fc.name === 'fs_read') res = readFile(fc.args.path as string) || "Hata: Dosya bulunamadı.";
-                if (fc.name === 'fs_write') {
-                  onFileUpdate(fc.args.path as string, fc.args.content as string);
-                  res = "Başarılı: Kayıt işlendi.";
-                }
-                sessionPromise.then(s => s.sendToolResponse({ functionResponses: { id: fc.id, name: fc.name, response: { result: res } } }));
+                let res = fc.name === 'fs_read' ? readFile(fc.args.path as string) || "File not found" : "Operation Success";
+                if (fc.name === 'fs_write') onFileUpdate(fc.args.path as string, fc.args.content as string);
+                
+                sessionPromise.then(s => s.sendToolResponse({ 
+                  functionResponses: { id: fc.id, name: fc.name, response: { result: res } } 
+                }));
               }
             }
 
-            // Audio Output
             const base64 = msg.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
             if (base64) {
               setStatus('RX');
@@ -167,17 +167,19 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ lang, sessionId, onFileUpdate, read
               const node = outputCtxRef.current!.createBufferSource();
               node.buffer = buf;
               node.connect(outputCtxRef.current!.destination);
+              
               nextStartTimeRef.current = Math.max(outputCtxRef.current!.currentTime, nextStartTimeRef.current);
               node.start(nextStartTimeRef.current);
               nextStartTimeRef.current += buf.duration;
+              
               activeSourcesRef.current.add(node);
-              node.onended = () => {
-                activeSourcesRef.current.delete(node);
-                if (activeSourcesRef.current.size === 0) setStatus('IDLE');
+              node.onended = () => { 
+                activeSourcesRef.current.delete(node); 
+                if (activeSourcesRef.current.size === 0) setStatus('IDLE'); 
               };
             }
           },
-          onerror: () => setStatus('IDLE'),
+          onerror: (e) => { console.error('Live API Error:', e); setStatus('IDLE'); },
           onclose: () => disconnect()
         }
       });
@@ -186,98 +188,91 @@ const VHFRadio: React.FC<VHFRadioProps> = ({ lang, sessionId, onFileUpdate, read
       const source = inputCtxRef.current!.createMediaStreamSource(stream);
       const script = inputCtxRef.current!.createScriptProcessor(4096, 1, 1);
       script.onaudioprocess = (e) => {
-        if (isTransmitting && sessionRef.current) {
+        if (isTransmittingRef.current && sessionRef.current) {
           const blob = createBlob(e.inputBuffer.getChannelData(0));
           sessionRef.current.then((s: any) => s.sendRealtimeInput({ media: blob }));
         }
       };
       source.connect(script);
       script.connect(inputCtxRef.current!.destination);
-    } catch (e) { onToggle(); }
+    } catch (e) { 
+      console.error('Connection Failed:', e);
+      onToggle(); 
+    }
   };
 
-  useEffect(() => {
-    if (isActive && !powerOn) connect();
-    if (!isActive && powerOn) disconnect();
-  }, [isActive]);
+  useEffect(() => { isActive ? connect() : disconnect(); }, [isActive]);
 
   if (!isActive) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 backdrop-blur-3xl bg-black/90 animate-fade-in overflow-hidden">
-       <div className={`relative w-full h-full md:h-auto flex flex-col xl:flex-row gap-6 ${showArchive ? 'max-w-6xl' : 'max-w-xl'}`}>
-          <div className="flex-1 bg-[#051412] md:border-2 border-brass-500/20 md:rounded-[3rem] flex flex-col overflow-hidden shadow-2xl relative">
-             
-             {/* Status Header */}
-             <div className="p-8 flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                   <div className={`w-2 h-2 rounded-full animate-pulse ${status === 'RX' ? 'bg-blue-500' : status === 'SYNCING' ? 'bg-amber-500' : 'bg-emerald-500'}`}></div>
-                   <span className="text-[8px] font-mono font-bold text-brass-500/60 tracking-widest uppercase">{status} // V13.5</span>
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 backdrop-blur-xl bg-navy-950/80 animate-fade-in overflow-hidden">
+       <div className="relative w-full max-w-xl flex flex-col gap-6">
+          <div className="bg-navy-900 border-2 border-azure-500/30 rounded-[3rem] flex flex-col overflow-hidden shadow-2xl ring-1 ring-white/10">
+             <div className="p-8 flex justify-between items-center bg-navy-950/50 border-b border-azure-500/10">
+                <div className="flex items-center gap-4">
+                   <div className={`w-3 h-3 rounded-full ${status === 'RX' ? 'bg-cyan-400 animate-ping shadow-[0_0_15px_#22d3ee]' : 'bg-azure-500'}`}></div>
+                   <span className="text-[10px] font-mono font-black text-azure-400 tracking-widest uppercase">ADA LIVE CONCIERGE // VHF CH 11</span>
                 </div>
-                <div className="flex gap-2">
-                   <button onClick={() => setShowArchive(!showArchive)} className={`p-3 rounded-xl transition-all ${showArchive ? 'bg-brass-500 text-emerald-950' : 'bg-white/5 text-ivory-100/20 hover:text-brass-500'}`}>
-                      <Terminal className="w-5 h-5" />
-                   </button>
-                   <button onClick={onToggle} className="p-3 bg-white/5 rounded-xl text-ivory-100/20 hover:text-red-500"><X className="w-5 h-5" /></button>
-                </div>
+                <button onClick={onToggle} className="p-3 bg-white/5 rounded-full text-white hover:bg-white/10 transition-colors"><X className="w-5 h-5" /></button>
              </div>
 
-             <div className="flex-1 p-10 flex flex-col items-center justify-center gap-10">
+             <div className="p-12 flex flex-col items-center gap-10">
                 <button 
                   onClick={() => setIsTransmitting(!isTransmitting)} 
-                  className={`w-40 h-40 md:w-56 md:h-56 rounded-full border-2 flex flex-col items-center justify-center gap-4 transition-all duration-700 ${isTransmitting ? 'bg-emerald-900/40 border-brass-500 text-brass-500 brass-glow' : 'bg-black/60 border-white/10 text-ivory-100/10'}`}
+                  className={`w-40 h-40 rounded-full border-4 flex flex-col items-center justify-center gap-4 transition-all duration-500 relative group active:scale-95 ${isTransmitting ? 'bg-azure-600 border-azure-400 text-white shadow-[0_20px_50px_rgba(14,165,233,0.3)]' : 'bg-navy-950 border-azure-500/20 text-azure-400/30 hover:border-azure-400'}`}
                 >
-                   {isTransmitting ? <Mic className="w-10 h-10 md:w-14 md:h-14 animate-pulse" /> : <MicOff className="w-10 h-10 md:w-14 md:h-14" />}
-                   <span className="text-[10px] font-bold tracking-[0.4em] uppercase">{isTransmitting ? 'TRANSMITTING' : 'STANDBY'}</span>
+                   {isTransmitting ? <Mic className="w-12 h-12 animate-pulse" /> : <MicOff className="w-12 h-12" />}
+                   <span className="text-[10px] font-black tracking-[0.2em] uppercase">{isTransmitting ? 'SESİNİZ ALINIYOR' : 'SESİNİZ KAPALI'}</span>
+                   <div className="absolute inset-0 rounded-full border-4 border-azure-400 opacity-0 group-hover:opacity-100 transition-opacity scale-105 pointer-events-none"></div>
                 </button>
                 
-                <div className="w-full max-w-lg min-h-[140px] flex flex-col items-start justify-center px-8 bg-black/40 border border-white/5 rounded-3xl py-6 overflow-hidden">
+                <div className="w-full min-h-[160px] flex flex-col gap-6 px-10 py-10 bg-navy-950 border-2 border-azure-500/10 rounded-[2.5rem] relative overflow-hidden group">
+                   <div className="absolute top-0 left-0 w-full h-1 bg-azure-500/20"></div>
                    {liveInputText ? (
-                     <div className="mb-4 animate-fade-in flex items-start gap-3 w-full">
-                        <span className="text-[9px] font-bold text-brass-500 mt-1 uppercase">CAPT:</span>
-                        <p className="text-brass-400 font-mono text-xs italic">"{liveInputText}"</p>
+                     <div className="animate-fade-in flex items-start gap-4">
+                        <span className="text-[9px] font-black text-azure-400/50 uppercase mt-1">KAPTAN:</span>
+                        <p className="text-white font-sans text-sm italic font-medium leading-relaxed">"{liveInputText}"</p>
                      </div>
                    ) : !liveOutputText && (
-                     <div className="w-full text-center text-[8px] text-ivory-100/10 tracking-widest uppercase animate-pulse">Awaiting Signal...</div>
+                     <div className="w-full text-center text-[10px] text-azure-400/20 tracking-[0.4em] uppercase animate-pulse font-bold mt-10">Sinyal bekleniyor...</div>
                    )}
                    {liveOutputText && (
-                     <div className="animate-fade-in flex items-start gap-3 w-full border-t border-white/5 pt-4">
-                        <span className="text-[9px] font-bold text-emerald-500 mt-1 uppercase">ADA:</span>
-                        <p className="text-emerald-400 font-mono text-xs leading-relaxed">
-                          <MessageSquareQuote className="w-3 h-3 inline mr-2 opacity-50" />
+                     <div className="animate-fade-in flex items-start gap-4 border-t border-white/5 pt-6">
+                        <span className="text-[9px] font-black text-cyan-400 uppercase mt-1">ADA:</span>
+                        <div className="text-white font-sans text-sm leading-relaxed font-bold">
+                          <MessageSquareQuote className="w-4 h-4 inline mr-2 text-azure-400 opacity-40" />
                           {liveOutputText}
-                          <span className="w-1.5 h-3 bg-emerald-500 inline-block ml-1 animate-pulse"></span>
-                        </p>
+                          <span className="w-1.5 h-4 bg-azure-500 inline-block ml-1 animate-pulse"></span>
+                        </div>
                      </div>
                    )}
                 </div>
              </div>
 
-             <div className="p-8 bg-black/40 border-t border-white/5 flex justify-between items-center px-12">
-                <div className="font-mono text-[8px] text-brass-500/30 tracking-widest uppercase">ENCRYPTED_VOYAGE_LINK // {sessionId}</div>
-                <div className="flex items-center gap-2 text-emerald-500/40 text-[8px] font-bold tracking-widest uppercase"><Activity className="w-3 h-3" /> STABILITY: 100%</div>
+             <div className="p-8 bg-azure-900 border-t border-white/10 flex justify-between items-center px-12 text-white">
+                <div className="flex items-center gap-6">
+                   <div className="flex flex-col">
+                      <span className="text-[8px] font-black opacity-60 uppercase">Frekans</span>
+                      <span className="text-xs font-mono font-bold tracking-widest">{config.vhfChannel}.00 MHZ</span>
+                   </div>
+                   <div className="w-px h-8 bg-white/10"></div>
+                   <div className="flex flex-col">
+                      <span className="text-[8px] font-black opacity-60 uppercase">Bağlantı</span>
+                      <span className="text-xs font-mono font-bold tracking-widest uppercase">AKTİF_V16</span>
+                   </div>
+                </div>
+                <div className="flex items-center gap-3">
+                   <Activity className="w-4 h-4 text-cyan-400" />
+                   <div className="flex gap-0.5">
+                      <div className="w-1 h-3 bg-white/20"></div>
+                      <div className="w-1 h-4 bg-white/40"></div>
+                      <div className="w-1 h-5 bg-white/60"></div>
+                      <div className="w-1 h-6 bg-white"></div>
+                   </div>
+                </div>
              </div>
           </div>
-
-          {showArchive && (
-            <div className="w-full xl:w-[450px] bg-black/60 md:border-2 border-brass-500/10 md:rounded-[3rem] overflow-hidden flex flex-col animate-fade-in backdrop-blur-xl">
-               <div className="p-6 border-b border-brass-500/10 bg-brass-500/5 flex items-center justify-between">
-                  <span className="text-[10px] font-bold tracking-widest uppercase text-brass-500">Bridge Archive</span>
-               </div>
-               <div className="flex-1 p-6 overflow-y-auto custom-scrollbar flex flex-col gap-4 font-mono text-[10px]">
-                  {transcript.map((msg, i) => (
-                    <div key={i} className={`p-4 rounded-xl border-l-2 ${msg.role === 'ADA' ? 'bg-emerald-500/5 border-emerald-500/40' : 'bg-brass-500/5 border-brass-500/40'}`}>
-                       <div className="flex justify-between mb-2 opacity-40 text-[8px] font-bold uppercase">
-                          <span className={msg.role === 'ADA' ? 'text-emerald-400' : 'text-brass-400'}>{msg.role}</span>
-                          <span>{msg.timestamp}</span>
-                       </div>
-                       <div className="text-ivory-100/70 italic leading-relaxed">"{msg.text}"</div>
-                    </div>
-                  ))}
-                  {transcript.length === 0 && <div className="h-full flex items-center justify-center opacity-10 text-[10px] uppercase tracking-widest py-20">Buffer Empty</div>}
-               </div>
-            </div>
-          )}
        </div>
     </div>
   );

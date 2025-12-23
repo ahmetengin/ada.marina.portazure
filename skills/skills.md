@@ -1,26 +1,27 @@
+
 # Ada: AI Steward Advanced Skill Matrix
 
-Bu doküman, Ada'nın "Scripting" (Function Calling) aracılığıyla yürütebildiği ileri seviye operasyonel yetenekleri tanımlar.
+This document defines the advanced operational capabilities that Ada can execute through "Scripting" (Function Calling).
 
-## 1. Navigasyonel Destek (Navigation Scripts)
-- **`calculate_voyage_eta`**: Rota ve varış süresi hesaplar.
-- **`check_port_entry_status`**: Liman doluluk ve VHF bilgilerini sorgular.
+## 1. Navigational Support (Navigation Scripts)
+- **`calculate_voyage_eta`**: Calculates route and estimated arrival time.
+- **`check_port_entry_status`**: Queries port occupancy and VHF details.
 
-## 2. Gümrük ve Mevzuat (Compliance Scripts)
-- **`verify_border_documents`**: Sınır geçiş checklistini yönetir.
-- **`get_customs_hours`**: Gümrük çalışma saatlerini kontrol eder.
+## 2. Customs and Compliance (Compliance Scripts)
+- **`verify_border_documents`**: Manages the border crossing checklist.
+- **`get_customs_hours`**: Checks customs operational hours.
 
-## 3. Lüks Concierge (Lifestyle Scripts)
-- **`concierge_reserve_table`**: Restoran rezervasyon taleplerini yönetir.
-- **`order_provisions`**: İkmal listelerini oluşturur.
+## 3. Luxury Concierge (Lifestyle Scripts)
+- **`concierge_reserve_table`**: Manages restaurant reservation requests.
+- **`order_provisions`**: Generates provisioning lists.
 
-## 4. Kayıt ve Raporlama (Logging & Reporting) - YENİ
-- **`record_log_entry`**: Kritik olayları (rezervasyonlar, rota değişiklikleri, gümrük onayları) `logbook.md` formatında dijital arşive işler.
-- **`summarize_voyage_logs`**: Seyir boyunca tutulan kayıtları özetleyerek kaptana rapor sunar.
+## 4. Logging & Reporting (New)
+- **`record_log_entry`**: Records critical events (reservations, route changes, customs approvals) into the digital archive in `reservations.md` format.
+- **`summarize_voyage_logs`**: Summarizes logs kept during the voyage and presents a report to the captain.
 
-## 5. Teknik Entegrasyon
-- **Audio Fidelity**: 24.000Hz PCM ses kalitesi.
-- **Logbook Persistence**: Görüşme sonlansa bile önemli verilerin güvenli sunucuda saklanması.
+## 5. Technical Integration
+- **Audio Fidelity**: 24,000Hz PCM sound quality.
+- **Logbook Persistence**: Critical data is stored securely even after the session ends.
 
 ---
 *Status: Digital Logbook Protocol Active | Engine: Gemini 2.5 Flash Native*

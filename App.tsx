@@ -7,65 +7,68 @@ import MarinaMap from './components/MarinaMap';
 import ServicesSection from './components/ServicesSection';
 import BookingSearch from './components/BookingSearch';
 import Logbook from './components/Logbook';
-import FileSystemSidebar from './components/FileSystemSidebar';
-import { MARINA_CONFIG, MOCK_WEATHER, TRANSLATIONS } from './constants';
+import { MARINA_CONFIG, MOCK_WEATHER, TRANSLATIONS, FOOTER_LINKS } from './constants';
+import { initializeAI } from './services/geminiService';
 import { 
   Anchor, 
   HardDrive, 
   Navigation, 
   Globe, 
-  User, 
   CheckCircle, 
   Waves, 
   X, 
   CreditCard, 
-  Clock, 
   QrCode, 
-  ExternalLink, 
-  Smartphone,
+  Radio, 
+  Menu, 
+  Clock, 
+  Compass, 
   ShieldCheck,
-  Zap,
-  Droplets,
-  Wifi,
-  Activity,
-  Radio
+  Smartphone,
+  ExternalLink,
+  User
 } from 'lucide-react';
-import { Language, Slip } from './types';
+import { Language, Slip, BookingStatus } from './types';
 
 const INITIAL_VFS = {
-  '/docs/alesta-hotel.md': '# ALESTA YACHT HOTEL\n- 52 Private Rooms\n- Roof Restaurant\n- SPA & Wellness',
-  '/docs/alesta-yachting.md': '# ALESTA YACHTING\n- 14 Professional Yachts\n- Blue Cruise Operations',
-  '/docs/alesta-beach.md': '# ALESTA BEACH CLUB\n- Aksazlar Bay\n- Free Shuttle Boat Service',
-  '/docs/logs/reservations.md': '# RESERVATION LOGS\n| PNR | GUEST | SERVICE | DATE | STATUS |\n| :--- | :--- | :--- | :--- | :--- |\n| ALST-00000 | SYSTEM | INIT | 2025-01-01 | ACTIVE |',
+  '/docs/alesta-yacht-hotel.md': '# ALESTA YACHT HOTEL (Fethiye)\n- 52 boutique units directly across the harbor.\n- **Alarga Restaurant**: Rooftop gourmet dining with sunset view.\n- **Spa**: Traditional Turkish bath and wellness center.',
+  '/docs/alesta-beach-club.md': '# ALESTA BEACH CLUB\n- Private beach at Aksazlar Bay.\n- **Shuttle**: Free boat transfer from the hotel pier every 30 minutes.\n- **Season**: Open from May 15 to October 15.',
+  '/docs/port-guide.md': '# PORT AZURE MARITIME ENTRY\n- **VHF Channel**: 11 (Call Sign: Ada)\n- **Coordinates**: 36°45\'09"N / 28°56\'24"E\n- Standby 24/7 for berthing coordination.',
+  '/docs/logs/reservations.md': '# MASTER RESERVATION LOG\n| PNR | GUEST | BERTH | DATE | STATUS |\n| :--- | :--- | :--- | :--- | :--- |\n| ALST-00000 | SYSTEM | INIT | 2025-01-01 | ACTIVE |',
 };
 
 const App: React.FC = () => {
-  const [lang, setLang] = useState<Language>('en');
+  const [lang, setLang] = useState<Language>('tr');
   const [isRadioActive, setIsRadioActive] = useState(false);
   const [isLogbookOpen, setIsLogbookOpen] = useState(false);
-  const [activePath, setActivePath] = useState<string>('/docs/alesta-hotel.md');
+  const [activePath, setActivePath] = useState<string>('/docs/port-guide.md');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  // VFS State Management
   const [vfs, setVfs] = useState<Record<string, string>>(() => {
-    const saved = localStorage.getItem('ada_vfs_v13_5');
+    const saved = localStorage.getItem('alesta_vfs_v16');
     return saved ? JSON.parse(saved) : INITIAL_VFS;
   });
 
-  // Booking Flow State
   const [bookingTrigger, setBookingTrigger] = useState<Slip | null>(null);
-  const [bookingState, setBookingState] = useState<'IDLE' | 'PRE_BOOKED' | 'PAYING' | 'CONFIRMED'>('IDLE');
+  const [bookingState, setBookingState] = useState<BookingStatus>('IDLE');
   const [pnr, setPnr] = useState('');
-  const [searchCriteria, setSearchCriteria] = useState<any>(null);
 
   const sessionId = useMemo(() => {
     const existing = sessionStorage.getItem('ada_session_id');
     if (existing) return existing;
-    const newId = `BASE-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+    const newId = `ADA-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
     sessionStorage.setItem('ada_session_id', newId);
     return newId;
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('ada_vfs_v13_5', JSON.stringify(vfs));
+    localStorage.setItem('alesta_vfs_v16', JSON.stringify(vfs));
   }, [vfs]);
+
+  useEffect(() => {
+    initializeAI(lang, Object.keys(vfs));
+  }, [lang, vfs]);
 
   const updateFile = useCallback((path: string, content: string) => {
     setVfs(prev => ({ ...prev, [path]: content }));
@@ -74,236 +77,229 @@ const App: React.FC = () => {
 
   const readFile = useCallback((path: string) => vfs[path] || null, [vfs]);
 
-  const generatePNR = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = 'ALST-';
-    for (let i = 0; i < 5; i++) {
-      result += chars.charAt(Math.floor(chars.length * Math.random()));
-    }
-    return result;
-  };
-
-  const handleBookSlip = (slip: Slip) => {
-    const newPnr = generatePNR();
+  const handleBookSlip = useCallback((slip: Slip) => {
+    const newPnr = 'ALST-' + Math.random().toString(36).substr(2, 5).toUpperCase();
     setPnr(newPnr);
     setBookingTrigger(slip);
     setBookingState('PRE_BOOKED');
-  };
+  }, []);
 
-  const confirmPayment = () => {
+  const confirmPayment = useCallback(() => {
     setBookingState('PAYING');
     setTimeout(() => {
       setBookingState('CONFIRMED');
-      // Auto-log to VFS on successful booking
-      const timestamp = new Date().toISOString().split('T')[0];
-      const newEntry = `| ${pnr} | GUEST_WEB | BERTH_${bookingTrigger?.number} | ${timestamp} | CONFIRMED |`;
-      const currentLog = vfs['/docs/logs/reservations.md'] || '';
-      const lines = currentLog.split('\n');
-      // Insert after header and alignment row
-      lines.splice(4, 0, newEntry);
-      updateFile('/docs/logs/reservations.md', lines.join('\n'));
+      const log = `| ${pnr} | GUEST_MARINER | ${bookingTrigger?.number} | ${new Date().toISOString().split('T')[0]} | CONFIRMED |`;
+      const current = vfs['/docs/logs/reservations.md'] || '';
+      updateFile('/docs/logs/reservations.md', current + '\n' + log);
     }, 2500);
-  };
-
-  const closeModals = () => {
-    setBookingState('IDLE');
-    setBookingTrigger(null);
-  };
+  }, [pnr, bookingTrigger, vfs, updateFile]);
 
   return (
-    <div className="min-h-screen bg-emerald-950 text-ivory-100/90 font-sans selection:bg-brass-500 selection:text-emerald-950">
+    <div className="min-h-screen bg-navy-950 text-white font-sans selection:bg-azure-500 selection:text-white">
       
-      {/* Status Bar */}
-      <div className="fixed top-0 w-full z-[100] bg-black/90 backdrop-blur-md border-b border-brass-500/10 h-10 flex items-center overflow-hidden">
-        <div className="flex animate-[ticker_60s_linear_infinite] whitespace-nowrap gap-16 text-[9px] font-mono tracking-[0.4em] text-brass-400/80 items-center font-bold">
-            <span className="flex items-center gap-3"><Waves className="w-3 h-3" /> PNR PROTOCOL: ACTIVE</span>
-            <span className="flex items-center gap-3"><Navigation className="w-3 h-3" /> SESSION: {sessionId}</span>
-            <span className="flex items-center gap-3 text-emerald-500"><CheckCircle className="w-3 h-3" /> ADA NEURAL LINK: ONLINE</span>
-            <span className="flex items-center gap-3"><ShieldCheck className="w-3 h-3" /> SECURE_PAYMENT: ENABLED</span>
+      {/* Top Status Ticker - High Visibility */}
+      <div className="fixed top-0 w-full z-[100] bg-azure-600 text-white h-10 flex items-center overflow-hidden shadow-xl border-b border-white/20">
+        <div className="flex animate-[ticker_40s_linear_infinite] whitespace-nowrap gap-16 text-[11px] font-mono tracking-[0.2em] font-black uppercase items-center">
+            <span className="flex items-center gap-3"><Navigation className="w-3.5 h-3.5" /> LAT: {MARINA_CONFIG.coordinates.lat} N</span>
+            <span className="flex items-center gap-3"><Radio className="w-3.5 h-3.5 text-sunlight-400" /> VHF_CH: {MARINA_CONFIG.vhfChannel} (STANDBY)</span>
+            <span className="flex items-center gap-3"><Waves className="w-3.5 h-3.5" /> TIDE: STABLE</span>
+            <span className="flex items-center gap-3"><ShieldCheck className="w-3.5 h-3.5" /> SYNC: SECURE</span>
+            <span className="flex items-center gap-3 opacity-90 font-bold"><Clock className="w-3.5 h-3.5" /> {new Date().toLocaleTimeString()}</span>
         </div>
       </div>
 
-      <nav className="fixed top-10 w-full z-[90] px-6 md:px-12 py-4 flex justify-between items-center backdrop-blur-2xl bg-emerald-900/40 border-b border-brass-500/10">
-        <div className="flex items-center gap-4 cursor-pointer" onClick={() => window.scrollTo({top:0, behavior:'smooth'})}>
-            <Anchor className="w-8 h-8 text-brass-500" />
-            <span className="font-heading font-bold text-xl text-ivory-50 tracking-widest uppercase">PORT <span className="text-brass-500 italic">AZURE</span></span>
+      <nav className="fixed top-10 w-full z-40 px-6 md:px-12 py-6 flex justify-between items-center nav-blur bg-navy-950/90 border-b border-azure-500/20 shadow-lg">
+        <div 
+          className="flex items-center gap-4 group cursor-pointer" 
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+            <div className="w-12 h-12 bg-azure-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-azure-900/50 group-hover:scale-110 transition-transform">
+               <Anchor className="w-7 h-7" />
+            </div>
+            <span className="font-heading font-bold text-2xl md:text-3xl tracking-[0.05em] uppercase text-white">
+              PORT <span className="text-azure-500 italic">AZURE</span>
+            </span>
         </div>
         
-        <div className="flex items-center gap-8">
-            <div className="hidden lg:flex gap-10 text-[10px] font-bold tracking-widest text-ivory-100/70 uppercase">
-                <button onClick={() => setIsLogbookOpen(true)} className="hover:text-brass-500 transition-colors flex items-center gap-2 font-bold tracking-widest"><HardDrive className="w-4 h-4" /> ARCHIVE</button>
-                <a href="#services" className="hover:text-brass-500 transition-colors tracking-widest">ALESTA HUB</a>
+        <div className="flex items-center gap-10">
+            <div className="hidden lg:flex gap-10 text-[12px] font-black tracking-[0.25em] text-white uppercase">
+                <a href="#services" className="hover:text-azure-400 transition-all border-b-2 border-transparent hover:border-azure-500 pb-1">Hizmetler</a>
+                <a href="#operations" className="hover:text-azure-400 transition-all border-b-2 border-transparent hover:border-azure-500 pb-1">Bağlama Planı</a>
+                <button 
+                  onClick={() => setIsLogbookOpen(true)} 
+                  className="hover:text-azure-400 transition-all border-b-2 border-transparent hover:border-azure-500 pb-1 flex items-center gap-2"
+                >
+                  <HardDrive className="w-4 h-4" /> Arşiv
+                </button>
             </div>
-            <button onClick={() => setLang(lang === 'tr' ? 'en' : 'tr')} className="text-[10px] font-bold tracking-widest border border-brass-500/30 px-4 py-2 hover:border-brass-500 transition-colors bg-white/5 uppercase">
-                <Globe className="w-4 h-4 inline mr-2" /> {lang}
-            </button>
-            <button className="hidden sm:block text-[10px] font-bold tracking-widest bg-brass-500 text-emerald-950 px-8 py-3 hover:bg-ivory-50 transition-all uppercase">
-                <User className="w-4 h-4 inline mr-2" /> LOGIN
-            </button>
+
+            <div className="flex items-center gap-6">
+                <button 
+                  onClick={() => setLang(lang === 'tr' ? 'en' : 'tr')} 
+                  className="text-white bg-azure-900/40 border-2 border-azure-500/30 px-5 py-2 text-[11px] font-black hover:bg-azure-600 transition-all uppercase rounded-full flex items-center gap-2"
+                >
+                  <Globe className="w-4 h-4" /> {lang.toUpperCase()}
+                </button>
+                <button 
+                  className="hidden md:flex bg-azure-500 text-white px-8 py-3 rounded-full hover:bg-azure-400 transition-all text-[12px] font-black tracking-[0.15em] uppercase shadow-lg items-center gap-3 active:scale-95"
+                >
+                    <User className="w-5 h-5" /> PANEL
+                </button>
+                <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden text-azure-400"><Menu className="w-8 h-8" /></button>
+            </div>
         </div>
       </nav>
 
-      <div className="flex pt-24 min-h-screen">
-        <aside className="hidden xl:block w-72 border-r border-brass-500/10 bg-black/20 overflow-y-auto">
-           <FileSystemSidebar files={vfs} activePath={activePath} onFileSelect={(p) => { setActivePath(p); setIsLogbookOpen(true); }} />
-        </aside>
-
-        <main className="flex-1 overflow-y-auto scroll-smooth custom-scrollbar">
-           <Hero lang={lang} />
-           <BookingSearch lang={lang} onSearch={setSearchCriteria} />
-           <ServicesSection lang={lang} />
-           
-           <div id="operations" className="py-32 px-6 md:px-20 bg-[#010505] relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brass-500/20 to-transparent"></div>
-              <div className="max-w-7xl mx-auto mb-20">
-                <span className="text-brass-500 text-[10px] tracking-[0.5em] uppercase font-bold mb-4 block">Bridge View</span>
-                <h2 className="font-heading text-4xl md:text-6xl text-ivory-50 uppercase tracking-tight">Vessel <span className="italic text-brass-500 lowercase">Deployment</span></h2>
+      {/* Floating ADA AI Button */}
+      <div className="fixed bottom-10 right-10 z-[100] flex flex-col items-end gap-5">
+          <div className="bg-navy-900 border-2 border-azure-500/40 px-5 py-2.5 rounded-2xl text-[10px] font-black tracking-[0.3em] text-azure-400 uppercase animate-fade-in shadow-2xl">
+             VHF CH 11 // STANDBY
+          </div>
+          <button 
+            onClick={() => setIsRadioActive(true)}
+            className="group relative w-24 h-24 bg-azure-600 text-white rounded-full flex items-center justify-center shadow-[0_30px_70px_rgba(14,165,233,0.5)] hover:shadow-[0_40px_90px_rgba(14,165,233,0.7)] transition-all duration-500 hover:-translate-y-3 active:scale-90 border-4 border-azure-400/40"
+          >
+              <div className="absolute inset-0 rounded-full bg-azure-400 animate-ping opacity-20 group-hover:opacity-40"></div>
+              <Radio className="w-10 h-10 group-hover:scale-110 transition-transform" />
+              <div className="absolute -top-1 -right-1 w-7 h-7 bg-cyan-400 rounded-full border-4 border-navy-950 flex items-center justify-center">
+                 <div className="w-2 h-2 bg-navy-950 rounded-full animate-pulse"></div>
               </div>
-              <MarinaMap lang={lang} onBookSlip={handleBookSlip} searchCriteria={searchCriteria} />
-           </div>
-
-           <footer className="bg-emerald-900/40 py-16 text-center border-t border-brass-500/10">
-              <div className="flex justify-center gap-8 mb-8 opacity-40">
-                <Zap className="w-5 h-5 text-brass-500" />
-                <Wifi className="w-5 h-5 text-brass-500" />
-                <Droplets className="w-5 h-5 text-brass-500" />
-              </div>
-              <div className="font-mono text-[9px] text-brass-500/30 tracking-[0.4em] uppercase">
-                © 2025 PORT AZURE MARITIME & ALESTA GROUP SYNC. OVER.
-              </div>
-           </footer>
-        </main>
+          </button>
       </div>
 
-      {/* Floating Radio Trigger */}
-      <div className="fixed bottom-10 right-10 z-[150]">
-         <button 
-           onClick={() => setIsRadioActive(true)}
-           className="w-20 h-20 bg-brass-500 rounded-full flex items-center justify-center text-emerald-950 shadow-[0_0_50px_rgba(197,160,89,0.4)] hover:scale-110 active:scale-95 transition-all relative overflow-hidden group"
-         >
-            <Radio className="w-8 h-8 relative z-10" />
-            <div className="absolute inset-0 border-4 border-white/30 rounded-full animate-ping opacity-20"></div>
-         </button>
-      </div>
+      <main className="pt-10">
+        <Hero lang={lang} />
+        <BookingSearch lang={lang} onSearch={() => {}} />
+        
+        <div id="services">
+          <ServicesSection lang={lang} />
+        </div>
+        
+        <div id="operations" className="max-w-[1400px] mx-auto py-32 px-6">
+          <MarinaMap lang={lang} onBookSlip={handleBookSlip} />
+        </div>
+      </main>
 
-      {/* Modern Refactored Booking Modal */}
+      <InfoPanel weather={MOCK_WEATHER} config={MARINA_CONFIG} lang={lang} />
+      
+      <VHFRadio 
+        config={MARINA_CONFIG} 
+        lang={lang} 
+        sessionId={sessionId} 
+        onFileUpdate={updateFile} 
+        readFile={readFile} 
+        isActive={isRadioActive} 
+        onToggle={() => setIsRadioActive(!isRadioActive)}
+        availableFiles={Object.keys(vfs)}
+      />
+
+      <Logbook 
+        files={vfs} 
+        isOpen={isLogbookOpen} 
+        onClose={() => setIsLogbookOpen(false)} 
+        activePath={activePath}
+        onFileSelect={setActivePath}
+      />
+
+      {/* Booking Modal */}
       {bookingState !== 'IDLE' && bookingTrigger && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 backdrop-blur-3xl bg-emerald-950/80 animate-fade-in overflow-y-auto">
-           <div className="relative w-full max-w-2xl bg-[#051412] border-[1px] border-brass-500/30 shadow-[0_100px_200px_rgba(0,0,0,0.8)] md:rounded-[4rem] overflow-hidden">
-              
-              <button onClick={closeModals} className="absolute top-8 right-8 text-ivory-100/20 hover:text-red-500 transition-colors p-4 rounded-full bg-white/5 border border-white/10">
-                 <X className="w-6 h-6" />
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 backdrop-blur-xl bg-navy-950/90 animate-fade-in">
+           <div className="relative w-full max-w-xl bg-navy-900 border-2 border-azure-500/30 p-12 rounded-[3rem] shadow-2xl ring-1 ring-white/10 overflow-hidden">
+              <button 
+                onClick={() => setBookingState('IDLE')} 
+                className="absolute top-10 right-10 text-white/40 hover:text-white transition-colors"
+              >
+                <X className="w-7 h-7" />
               </button>
               
-              <div className="p-12 md:p-16">
-                {/* Step Indicators */}
-                <div className="flex justify-between mb-16 px-4">
-                  {['BERTH', 'PAYMENT', 'SYNC'].map((step, i) => (
-                    <div key={step} className="flex flex-col items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full border-2 transition-all duration-700 ${
-                        (i === 0 && bookingState === 'PRE_BOOKED') || 
-                        (i === 1 && bookingState === 'PAYING') || 
-                        (i === 2 && bookingState === 'CONFIRMED') ? 'bg-brass-500 border-brass-500 shadow-[0_0_15px_#c5a059]' : 'bg-emerald-950 border-brass-500/20'
-                      }`}></div>
-                      <span className={`text-[8px] font-mono tracking-widest uppercase font-bold ${
-                        (i === 0 && bookingState === 'PRE_BOOKED') || (i === 1 && bookingState === 'PAYING') || (i === 2 && bookingState === 'CONFIRMED') ? 'text-brass-500' : 'text-ivory-100/20'
-                      }`}>{step}</span>
-                    </div>
-                  ))}
+              {bookingState === 'PRE_BOOKED' && (
+                <div className="animate-fade-in">
+                   <div className="text-center mb-12">
+                      <div className="w-24 h-24 bg-azure-600/20 text-azure-400 rounded-full flex items-center justify-center mx-auto mb-8 border-2 border-azure-500/30">
+                         <Clock className="w-12 h-12 animate-pulse" />
+                      </div>
+                      <h2 className="font-heading text-4xl text-white mb-4 uppercase tracking-tight">REZERVASYON</h2>
+                      <p className="text-[11px] text-azure-400/60 tracking-[0.5em] uppercase font-black font-mono">PNR: {pnr}</p>
+                   </div>
+                   <div className="bg-navy-950/80 p-8 rounded-[2rem] border border-azure-500/20 mb-10 text-[14px] space-y-5 font-mono">
+                      <div className="flex justify-between border-b border-azure-500/10 pb-4">
+                         <span className="text-white/40 uppercase">Bağlama Alanı</span>
+                         <span className="text-azure-400 font-black">{bookingTrigger.number} ({bookingTrigger.pontoon})</span>
+                      </div>
+                      <div className="flex justify-between text-xl font-heading pt-4">
+                         <span className="text-white/40 uppercase text-xs">Günlük Ücret</span>
+                         <span className="text-sunlight-500 font-bold">€{bookingTrigger.price}</span>
+                      </div>
+                   </div>
+                   <button 
+                    onClick={confirmPayment} 
+                    className="w-full py-6 bg-azure-600 text-white font-black tracking-[0.3em] uppercase hover:bg-azure-500 transition-all shadow-2xl rounded-2xl flex items-center justify-center gap-4 active:scale-95"
+                   >
+                     <CreditCard className="w-6 h-6" /> ÖDEMEYİ ONAYLA
+                   </button>
                 </div>
+              )}
 
-                {bookingState === 'PRE_BOOKED' && (
-                  <div className="animate-fade-in">
-                    <div className="flex items-center gap-4 mb-10 opacity-60">
-                       <ShieldCheck className="w-5 h-5 text-emerald-500" />
-                       <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-ivory-100/60">Deployment Confirmation</span>
-                    </div>
+              {bookingState === 'PAYING' && (
+                <div className="flex flex-col items-center justify-center py-24 animate-fade-in">
+                   <div className="w-20 h-20 border-t-4 border-azure-400 rounded-full animate-spin mb-10"></div>
+                   <h3 className="font-heading text-2xl text-white tracking-[0.2em] uppercase">İŞLEM YAPILIYOR...</h3>
+                </div>
+              )}
 
-                    <h2 className="font-heading text-4xl text-ivory-50 mb-8 uppercase tracking-tighter">PREPARING <span className="italic text-brass-500 lowercase">berth {bookingTrigger.number}</span></h2>
-                    
-                    <div className="bg-emerald-950/40 p-10 border border-brass-500/10 rounded-2xl mb-12 font-mono text-[11px] uppercase tracking-[0.2em] space-y-6">
-                       <div className="flex justify-between border-b border-white/5 pb-4">
-                          <span className="text-ivory-100/30">Vessel Slip</span>
-                          <span className="text-ivory-50">{bookingTrigger.pontoon} // {bookingTrigger.number}</span>
-                       </div>
-                       <div className="flex justify-between border-b border-white/5 pb-4">
-                          <span className="text-ivory-100/30">Dimensions</span>
-                          <span className="text-ivory-50">{bookingTrigger.length}m x {bookingTrigger.beam}m</span>
-                       </div>
-                       <div className="flex justify-between pt-4">
-                          <span className="text-ivory-100/30">Amount Due</span>
-                          <span className="text-brass-500 font-heading text-2xl">€{bookingTrigger.price}</span>
-                       </div>
-                    </div>
-
-                    <button 
-                      onClick={confirmPayment}
-                      className="w-full py-8 bg-brass-500 text-emerald-950 font-bold tracking-[0.5em] uppercase hover:bg-ivory-50 transition-all shadow-2xl flex items-center justify-center gap-6 text-[11px]"
-                    >
-                      <CreditCard className="w-5 h-5" /> AUTHORIZE PAYMENT
-                    </button>
-                    <p className="mt-8 text-[9px] text-center text-ivory-100/30 tracking-widest uppercase italic">Secure link established via Ada's Neural Hub.</p>
-                  </div>
-                )}
-
-                {bookingState === 'PAYING' && (
-                  <div className="flex flex-col items-center justify-center py-24 animate-fade-in text-center">
-                    <div className="w-20 h-20 border-t-2 border-brass-500 rounded-full animate-spin mb-10 shadow-[0_0_30px_rgba(197,160,89,0.2)]"></div>
-                    <h3 className="font-heading text-xl text-ivory-50 tracking-widest mb-4">SYNCING WITH MARITIME LEDGER...</h3>
-                    <p className="text-[10px] text-ivory-100/30 tracking-widest uppercase font-bold">Verifying PNR: {pnr}</p>
-                  </div>
-                )}
-
-                {bookingState === 'CONFIRMED' && (
-                  <div className="animate-fade-in text-center">
-                    <div className="w-24 h-24 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-10 text-emerald-500 shadow-[0_0_60px_rgba(16,185,129,0.2)]">
-                       <CheckCircle className="w-12 h-12" />
-                    </div>
-                    <h2 className="font-heading text-5xl text-ivory-50 mb-4 uppercase tracking-tighter">BERTH <span className="italic text-brass-500 lowercase">secured</span></h2>
-                    <p className="text-[10px] text-ivory-100/30 tracking-[0.4em] uppercase mb-12 font-bold font-mono">PNR: {pnr}</p>
-
-                    <div className="bg-white p-6 rounded-2xl mb-12 inline-block shadow-2xl border-4 border-emerald-900">
-                       <QrCode className="w-32 h-32 text-emerald-950" />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-10">
-                       <button className="py-4 border border-brass-500/20 text-brass-500 text-[9px] tracking-widest font-bold uppercase hover:bg-brass-500 hover:text-emerald-950 transition-all flex items-center justify-center gap-3">
-                          <Smartphone className="w-4 h-4" /> WALLET
-                       </button>
-                       <button className="py-4 border border-brass-500/20 text-brass-500 text-[9px] tracking-widest font-bold uppercase hover:bg-brass-500 hover:text-emerald-950 transition-all flex items-center justify-center gap-3">
-                          <ExternalLink className="w-4 h-4" /> LOGBOOK
-                       </button>
-                    </div>
-
-                    <button 
-                      onClick={closeModals}
-                      className="w-full py-6 bg-emerald-950 text-brass-500 font-bold tracking-[0.4em] uppercase hover:bg-brass-500 hover:text-emerald-950 transition-all text-[10px] border border-brass-500/20"
-                    >
-                      RETURN TO COMMAND BRIDGE
-                    </button>
-                  </div>
-                )}
-              </div>
+              {bookingState === 'CONFIRMED' && (
+                <div className="animate-fade-in text-center">
+                   <div className="w-24 h-24 bg-azure-500/20 text-azure-400 rounded-full flex items-center justify-center mx-auto mb-10 border-2 border-azure-400/40">
+                      <CheckCircle className="w-14 h-14" />
+                   </div>
+                   <h2 className="font-heading text-4xl text-white mb-4 uppercase tracking-tight">İŞLEM BAŞARILI</h2>
+                   <p className="text-[11px] text-azure-400/60 tracking-[0.5em] uppercase mb-12 font-black font-mono">REFERANS: {pnr}</p>
+                   <div className="bg-white p-6 rounded-3xl mb-12 inline-block"><QrCode className="w-40 h-40 text-navy-950" /></div>
+                   <button 
+                    onClick={() => setBookingState('IDLE')} 
+                    className="w-full py-6 bg-navy-950 border-2 border-azure-500/30 text-azure-400 font-black tracking-[0.3em] uppercase hover:bg-azure-600 hover:text-white transition-all rounded-2xl"
+                   >
+                    KAPAT
+                   </button>
+                </div>
+              )}
            </div>
         </div>
       )}
 
-      <VHFRadio 
-        config={MARINA_CONFIG} lang={lang} sessionId={sessionId} 
-        onFileUpdate={updateFile} readFile={readFile} 
-        isActive={isRadioActive} onToggle={() => setIsRadioActive(!isRadioActive)} 
-        availableFiles={Object.keys(vfs)} 
-      />
-      
-      <Logbook files={vfs} isOpen={isLogbookOpen} onClose={() => setIsLogbookOpen(false)} activePath={activePath} onFileSelect={setActivePath} />
-      
+      <footer className="bg-navy-950 pt-56 pb-24 px-8 text-center relative overflow-hidden border-t border-azure-500/20">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-azure-500/40 to-transparent"></div>
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-center gap-5 mb-12">
+            <Anchor className="w-12 h-12 text-azure-600" />
+            <span className="font-heading font-bold text-3xl text-white tracking-widest uppercase">PORT AZURE</span>
+          </div>
+          <p className="text-white/50 text-[14px] tracking-[0.2em] uppercase mb-20 leading-loose max-w-3xl mx-auto font-medium">
+            Akdeniz'in en seçkin liman operasyonları ve lüks misafirperverlik ağı.<br/>
+            Alesta Group Network'ün bir parçasıdır.
+          </p>
+          <div className="flex justify-center flex-wrap gap-12 text-[12px] font-black tracking-[0.25em] text-white/30 uppercase mb-20">
+            <a href="#" className="hover:text-azure-400 transition-colors">Güvenlik</a>
+            <a href="#" className="hover:text-azure-400 transition-colors">Liman Kuralları</a>
+            <a href="#" className="hover:text-azure-400 transition-colors">VHF İletişim</a>
+            <a href="#" className="hover:text-azure-400 transition-colors">Gizlilik</a>
+          </div>
+          <div className="text-[11px] text-white/20 tracking-[0.4em] uppercase font-mono font-bold">
+            © 2025 PORT AZURE MARITIME // SYNC_CORE_V16
+          </div>
+        </div>
+      </footer>
+
       <style>{`
-        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c5a059; border-radius: 10px; }
+        @keyframes ticker {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
         .animate-fade-in { animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(40px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        .brass-glow { box-shadow: 0 0 40px rgba(197, 160, 89, 0.2); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #020617; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 10px; }
       `}</style>
     </div>
   );

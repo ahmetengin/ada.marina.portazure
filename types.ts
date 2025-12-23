@@ -8,6 +8,8 @@ export interface TranscriptItem {
   timestamp: string;
 }
 
+export type BookingStatus = 'IDLE' | 'PRE_BOOKED' | 'PAYING' | 'CONFIRMED';
+
 export interface MarinaConfig {
   id: string;
   region: Region;

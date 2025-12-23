@@ -61,7 +61,7 @@ const BookingSearch: React.FC<BookingSearchProps> = ({ lang, onSearch }) => {
 
   return (
     <div className="w-full max-w-[1600px] mx-auto -mt-10 md:-mt-20 relative z-30 px-4">
-      <div className="bg-emerald-900 border border-brass-500/20 shadow-[0_40px_120px_rgba(0,0,0,0.7)] p-4 md:p-6 rounded-sm flex flex-col xl:flex-row gap-4 xl:items-center backdrop-blur-3xl overflow-hidden">
+      <div className="bg-navy-900 border border-azure-500/20 shadow-[0_40px_120px_rgba(0,0,0,0.5)] p-4 md:p-6 rounded-3xl flex flex-col xl:flex-row gap-4 xl:items-center backdrop-blur-3xl overflow-hidden ring-1 ring-white/5">
         
         {/* Region Selector */}
         <div className="relative group xl:w-60 w-full">
@@ -73,14 +73,14 @@ const BookingSearch: React.FC<BookingSearchProps> = ({ lang, onSearch }) => {
                const firstInReg = MARINA_NETWORK.find(m => reg === 'ALL' || m.region === reg);
                if (firstInReg) setMarinaId(firstInReg.id);
              }}
-             className="w-full bg-emerald-950/50 border border-brass-500/10 py-4 md:py-5 pl-12 pr-10 text-[10px] md:text-xs font-bold tracking-widest text-ivory-50 focus:border-brass-500 transition-all uppercase appearance-none cursor-pointer rounded-none"
+             className="w-full bg-navy-950/50 border border-azure-500/10 py-4 md:py-5 pl-12 pr-10 text-[10px] md:text-xs font-bold tracking-widest text-ivory-50 focus:border-azure-500 transition-all uppercase appearance-none cursor-pointer rounded-2xl"
            >
              <option value="ALL">Tüm Kıyılar</option>
              {REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
            </select>
-           <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brass-500" />
-           <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brass-500/40 pointer-events-none" />
-           <span className="absolute -top-2 left-4 bg-emerald-900 px-1 text-[7px] text-ivory-100/40 uppercase tracking-widest font-bold">{t.region}</span>
+           <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-azure-500" />
+           <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-azure-500/40 pointer-events-none" />
+           <span className="absolute -top-2 left-4 bg-navy-900 px-2 text-[7px] text-ivory-100/40 uppercase tracking-widest font-bold">{t.region}</span>
         </div>
 
         {/* Marina / Bay Selector */}
@@ -88,17 +88,17 @@ const BookingSearch: React.FC<BookingSearchProps> = ({ lang, onSearch }) => {
            <select 
              value={marinaId}
              onChange={(e) => setMarinaId(e.target.value)}
-             className="w-full bg-emerald-950/50 border border-brass-500/10 py-4 md:py-5 pl-12 pr-10 text-[10px] md:text-xs font-bold tracking-widest text-ivory-50 focus:border-brass-500 transition-all uppercase appearance-none cursor-pointer rounded-none"
+             className="w-full bg-navy-950/50 border border-azure-500/10 py-4 md:py-5 pl-12 pr-10 text-[10px] md:text-xs font-bold tracking-widest text-ivory-50 focus:border-azure-500 transition-all uppercase appearance-none cursor-pointer rounded-2xl"
            >
              {filteredMarinas.map(m => (
-               <option key={m.id} value={m.id} className="bg-emerald-950">
+               <option key={m.id} value={m.id} className="bg-navy-950">
                  {m.type === 'BAY_RESTAURANT' ? '⚓ ' : '🏛️ '}{m.name}
                </option>
              ))}
            </select>
-           <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brass-500" />
-           <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brass-500/40 pointer-events-none" />
-           <span className="absolute -top-2 left-4 bg-emerald-900 px-1 text-[7px] text-ivory-100/40 uppercase tracking-widest font-bold">{t.destination}</span>
+           <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-azure-500" />
+           <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-azure-500/40 pointer-events-none" />
+           <span className="absolute -top-2 left-4 bg-navy-900 px-2 text-[7px] text-ivory-100/40 uppercase tracking-widest font-bold">{t.destination}</span>
         </div>
 
         {/* Date & Time Group */}
@@ -109,19 +109,19 @@ const BookingSearch: React.FC<BookingSearchProps> = ({ lang, onSearch }) => {
                   type="date" 
                   value={dates.arrival}
                   onChange={(e) => setDates({ ...dates, arrival: e.target.value })}
-                  className="w-full bg-emerald-950/50 border border-brass-500/10 py-4 md:py-5 pl-12 pr-4 text-[10px] md:text-xs font-bold tracking-widest text-ivory-50 focus:border-brass-500 transition-all rounded-none" 
+                  className="w-full bg-navy-950/50 border border-azure-500/10 py-4 md:py-5 pl-12 pr-4 text-[10px] md:text-xs font-bold tracking-widest text-ivory-50 focus:border-azure-500 transition-all rounded-2xl" 
                 />
-                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brass-500/50" />
-                <span className="absolute -top-2 left-4 bg-emerald-900 px-1 text-[7px] text-ivory-100/40 uppercase tracking-widest font-bold">{t.arrival}</span>
+                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-azure-500/50" />
+                <span className="absolute -top-2 left-4 bg-navy-900 px-2 text-[7px] text-ivory-100/40 uppercase tracking-widest font-bold">{t.arrival}</span>
              </div>
              <div className="relative group w-24 md:w-32">
                 <input 
                   type="time" 
                   value={dates.arrivalTime}
                   onChange={(e) => setDates({ ...dates, arrivalTime: e.target.value })}
-                  className="w-full bg-emerald-950/50 border border-brass-500/10 py-4 md:py-5 pl-10 pr-4 text-[10px] md:text-xs font-bold tracking-widest text-ivory-50 focus:border-brass-500 transition-all rounded-none" 
+                  className="w-full bg-navy-950/50 border border-azure-500/10 py-4 md:py-5 pl-10 pr-4 text-[10px] md:text-xs font-bold tracking-widest text-ivory-50 focus:border-azure-500 transition-all rounded-2xl" 
                 />
-                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brass-500/50" />
+                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-azure-500/50" />
              </div>
           </div>
 
@@ -131,19 +131,19 @@ const BookingSearch: React.FC<BookingSearchProps> = ({ lang, onSearch }) => {
                   type="date" 
                   value={dates.departure}
                   onChange={(e) => setDates({ ...dates, departure: e.target.value })}
-                  className="w-full bg-emerald-950/50 border border-brass-500/10 py-4 md:py-5 pl-12 pr-4 text-[10px] md:text-xs font-bold tracking-widest text-ivory-50 focus:border-brass-500 transition-all rounded-none" 
+                  className="w-full bg-navy-950/50 border border-azure-500/10 py-4 md:py-5 pl-12 pr-4 text-[10px] md:text-xs font-bold tracking-widest text-ivory-50 focus:border-azure-500 transition-all rounded-2xl" 
                 />
-                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brass-500/50" />
-                <span className="absolute -top-2 left-4 bg-emerald-900 px-1 text-[7px] text-ivory-100/40 uppercase tracking-widest font-bold">{t.departure}</span>
+                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-azure-500/50" />
+                <span className="absolute -top-2 left-4 bg-navy-900 px-2 text-[7px] text-ivory-100/40 uppercase tracking-widest font-bold">{t.departure}</span>
              </div>
              <div className="relative group w-24 md:w-32">
                 <input 
                   type="time" 
                   value={dates.departureTime}
                   onChange={(e) => setDates({ ...dates, departureTime: e.target.value })}
-                  className="w-full bg-emerald-950/50 border border-brass-500/10 py-4 md:py-5 pl-10 pr-4 text-[10px] md:text-xs font-bold tracking-widest text-ivory-50 focus:border-brass-500 transition-all rounded-none" 
+                  className="w-full bg-navy-950/50 border border-azure-500/10 py-4 md:py-5 pl-10 pr-4 text-[10px] md:text-xs font-bold tracking-widest text-ivory-50 focus:border-azure-500 transition-all rounded-2xl" 
                 />
-                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brass-500/50" />
+                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-azure-500/50" />
              </div>
           </div>
         </div>
@@ -151,7 +151,7 @@ const BookingSearch: React.FC<BookingSearchProps> = ({ lang, onSearch }) => {
         {/* CTA */}
         <button 
           onClick={handleSearch}
-          className="xl:w-60 w-full bg-brass-500 text-emerald-950 px-10 py-4 md:py-5 text-[10px] md:text-[11px] font-bold tracking-[0.4em] uppercase flex items-center justify-center gap-3 hover:bg-ivory-50 transition-all shadow-xl rounded-none">
+          className="xl:w-60 w-full bg-azure-600 text-white px-10 py-4 md:py-5 text-[10px] md:text-[11px] font-bold tracking-[0.4em] uppercase flex items-center justify-center gap-3 hover:bg-azure-500 transition-all shadow-xl rounded-2xl">
           <Search className="w-4 h-4" /> {t.cta}
         </button>
       </div>

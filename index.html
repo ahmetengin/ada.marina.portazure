@@ -1,59 +1,72 @@
 
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" style="scroll-behavior: smooth;">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Port Azure | Mediterranean Command Bridge</title>
+    <title>Port Azure | Digital Bridge</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+              sans: ['Plus Jakarta Sans', 'sans-serif'],
               serif: ['Playfair Display', 'serif'],
               heading: ['Cinzel', 'serif'],
             },
             colors: {
-              emerald: {
-                950: '#020a09',
-                900: '#051412',
-                800: '#0a211e',
+              azure: {
+                50: '#f0f9ff',
+                100: '#e0f2fe',
+                200: '#bae6fd',
+                400: '#38bdf8',
+                500: '#0ea5e9',
+                600: '#0284c7',
+                900: '#0c4a6e',
               },
-              brass: {
-                400: '#e5c07b',
-                500: '#c5a059', 
-                600: '#a38144',
+              navy: {
+                800: '#1e293b',
+                900: '#0f172a',
+                950: '#020617',
+              },
+              sunlight: {
+                400: '#fbbf24',
+                500: '#f59e0b',
               },
               ivory: {
-                50: '#fffcf5',
-                100: '#f9f3e6',
+                50: '#f8fafc',
+                100: '#f1f5f9',
               }
             },
             animation: {
               'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'spin-slow': 'spin 12s linear infinite',
+              'float': 'float 6s ease-in-out infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-15px)' },
+              }
             }
           },
         },
       }
     </script>
     <style>
-      ::-webkit-scrollbar { width: 4px; }
-      ::-webkit-scrollbar-track { background: #020a09; }
-      ::-webkit-scrollbar-thumb { background: #c5a059; }
-      
-      .glass { background: rgba(2, 10, 9, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(197, 160, 89, 0.1); }
-      .brass-glow { box-shadow: 0 0 20px rgba(197, 160, 89, 0.2); }
-      .text-gradient { background: linear-gradient(135deg, #f9f3e6 0%, #c5a059 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #020617; }
+      ::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 10px; }
       
       body {
-        background-color: #020a09;
-        color: #f9f3e6;
+        background-color: #020617;
+        color: #f1f5f9;
         overflow-x: hidden;
       }
+
+      .text-glow { text-shadow: 0 0 20px rgba(14, 165, 233, 0.5); }
+      .nav-blur { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
     </style>
   <script type="importmap">
 {
